@@ -508,7 +508,9 @@ document.getElementById('btn-run').addEventListener('click', async () => {
 
   consoleOutput.textContent += '>>> Running...\n';
   try {
-    await pyodideInstance.runPythonAsync(code);
+    // 注入非同步暫停，防止無窮迴圈鎖死瀏覽器
+    const safeCode = "import asyncio\n" + code.replace(/^(\s*)(while .*?:|for .*?:)\n/gm, "$1$2\n$1  await asyncio.sleep(0.001)\n");
+    await pyodideInstance.runPythonAsync(safeCode);
   } catch(err) {
     consoleOutput.textContent += err;
   }
@@ -580,4 +582,5 @@ fileInput.addEventListener('change', (e) => {
   reader.readAsText(file);
   fileInput.value = ''; // Reset input
 });
+
 
