@@ -325,6 +325,13 @@ pythonGenerator.forBlock['import_module'] = function(block) {
 pythonGenerator.forBlock['call_module_function_args'] = function(block, generator) {
   const funcName = block.getFieldValue('FUNC_NAME');
   let args = generator.valueToCode(block, 'ARGS', generator.ORDER_NONE) || '';
+  
+  // 如果使用者接的是 List 方塊 (會產出如 "[1, 2]")，我們自動去掉中括號變成 "1, 2"
+  // 這樣就能支援多個參數傳入了！例如 math.pow(16, 2)
+  if (args.startsWith('[') && args.endsWith(']')) {
+    args = args.slice(1, -1);
+  }
+  
   const code = `${funcName}(${args})`;
   return [code, generator.ORDER_FUNCTION_CALL];
 };
@@ -395,7 +402,7 @@ pythonGenerator.forBlock['object_attr_set'] = function(block, generator) {
 pythonGenerator.forBlock['try_except_var'] = function(block, generator) {
   const tryBlock = generator.statementToCode(block, 'TRY') || '  pass\n';
   const exceptBlock = generator.statementToCode(block, 'EXCEPT') || '  pass\n';
-  const varName = block.getFieldValue('VAR');
+  const varName = block.getFieldValue('VAR') || 'e';
   return `try:\n${tryBlock}except Exception as ${varName}:\n${exceptBlock}`;
 };
 
@@ -483,16 +490,25 @@ builtins.input = browser_input
 initPyodide();
 
 // Button Logic: Run Python in Browser
-document.getElementById('btn-run').addEventListener('click', async () => {
+const runBtn = document.getElementById('btn-run');
+runBtn.addEventListener('click', async () => {
   if (!pyodideInstance) {
     alert('Python environment is still loading. Please wait.');
     return;
   }
+  
+  if (runBtn.disabled) return;
+  runBtn.disabled = true;
+  const originalText = runBtn.textContent;
+  runBtn.textContent = '⏳ Running...';
+  
   consoleOutput.textContent = ''; // clear output
   const code = pythonGenerator.workspaceToCode(workspace);
   
   if (!code.trim()) {
     consoleOutput.textContent = '>>> No code to run.\n';
+    runBtn.disabled = false;
+    runBtn.textContent = originalText;
     return;
   }
 
@@ -513,6 +529,9 @@ document.getElementById('btn-run').addEventListener('click', async () => {
   }
   consoleOutput.textContent += '\n>>> Finished.\n';
   consoleOutput.scrollTop = consoleOutput.scrollHeight;
+  
+  runBtn.disabled = false;
+  runBtn.textContent = originalText;
 });
 
 // Button Logic: Clear console
