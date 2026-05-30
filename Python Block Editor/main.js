@@ -49,6 +49,11 @@ const toolbox = {
       "contents": [
         { "kind": "block", "type": "text" },
         { "kind": "block", "type": "text_print" },
+        { 
+          "kind": "block", 
+          "type": "python_input", 
+          "inputs": { "PROMPT": { "shadow": { "type": "text", "fields": { "TEXT": "Please enter a value:" } } } } 
+        },
         {
           "kind": "block",
           "type": "text_prompt_ext",
@@ -330,6 +335,17 @@ Blockly.Blocks['type_cast'] = {
   }
 };
 
+Blockly.Blocks['python_input'] = {
+  init: function() {
+    this.appendValueInput("PROMPT")
+        .setCheck(null)
+        .appendField("input()");
+    this.setOutput(true, "String");
+    this.setColour(160);
+    this.setTooltip("Popup a browser prompt to get user input text");
+  }
+};
+
 // Python generation logic for custom blocks
 pythonGenerator.forBlock['import_module'] = function(block) {
   const moduleName = block.getFieldValue('MODULE_NAME');
@@ -435,6 +451,11 @@ pythonGenerator.forBlock['type_cast'] = function(block, generator) {
   const val = generator.valueToCode(block, 'VAL', generator.ORDER_NONE) || '0';
   const type = block.getFieldValue('TYPE');
   return [`${type}(${val})`, generator.ORDER_FUNCTION_CALL];
+};
+
+pythonGenerator.forBlock['python_input'] = function(block, generator) {
+  const promptText = generator.valueToCode(block, 'PROMPT', generator.ORDER_NONE) || '""';
+  return [`input(${promptText})`, generator.ORDER_FUNCTION_CALL];
 };
 
 // Inject Blockly Workspace
@@ -622,6 +643,155 @@ fileInput.addEventListener('change', (e) => {
   };
   reader.readAsText(file);
   fileInput.value = ''; // Reset input
+});
+
+// Built-in Examples Logic
+const examples = {
+  hello: {
+    "blocks": { "blocks": [ { "type": "text_print", "x": 50, "y": 50, "inputs": { "TEXT": { "shadow": { "type": "text", "fields": { "TEXT": "Hello, World!" } } } } } ] }
+  },
+  loop: {
+    "variables": [{"name": "i", "id": "var_i"}],
+    "blocks": { "blocks": [ {"type": "controls_for", "x": 50, "y": 50, "fields": {"VAR": {"id": "var_i"}}, "inputs": {"FROM": {"shadow": {"type": "math_number", "fields": {"NUM": 1}}}, "TO": {"shadow": {"type": "math_number", "fields": {"NUM": 10}}}, "BY": {"shadow": {"type": "math_number", "fields": {"NUM": 1}}}, "DO": {"block": {"type": "text_print", "inputs": {"TEXT": {"block": {"type": "variables_get", "fields": {"VAR": {"id": "var_i"}}}}}}}}} ] }
+  },
+  guess: {
+    "variables": [
+      {"name": "answer", "id": "ans"},
+      {"name": "guess", "id": "g"}
+    ],
+    "blocks": {
+      "blocks": [
+        {
+          "type": "import_module", "x": 50, "y": 50,
+          "fields": {"MODULE_NAME": "random"},
+          "next": {
+            "block": {
+              "type": "variables_set",
+              "fields": {"VAR": {"id": "ans"}},
+              "inputs": {
+                "VALUE": {
+                  "block": {
+                    "type": "random_randint",
+                    "inputs": {
+                      "MIN": {"shadow": {"type": "math_number", "fields": {"NUM": 1}}},
+                      "MAX": {"shadow": {"type": "math_number", "fields": {"NUM": 100}}}
+                    }
+                  }
+                }
+              },
+              "next": {
+                "block": {
+                  "type": "variables_set",
+                  "fields": {"VAR": {"id": "g"}},
+                  "inputs": {
+                    "VALUE": {"shadow": {"type": "math_number", "fields": {"NUM": 0}}}
+                  },
+                  "next": {
+                    "block": {
+                      "type": "controls_whileUntil",
+                      "fields": {"MODE": "WHILE"},
+                      "inputs": {
+                        "BOOL": {
+                          "block": {
+                            "type": "logic_compare",
+                            "fields": {"OP": "NEQ"},
+                            "inputs": {
+                              "A": {"block": {"type": "variables_get", "fields": {"VAR": {"id": "g"}}}},
+                              "B": {"block": {"type": "variables_get", "fields": {"VAR": {"id": "ans"}}}}
+                            }
+                          }
+                        }
+                      },
+                      "DO": {
+                        "block": {
+                          "type": "variables_set",
+                          "fields": {"VAR": {"id": "g"}},
+                          "inputs": {
+                            "VALUE": {
+                              "block": {
+                                "type": "type_cast",
+                                "fields": {"TYPE": "int"},
+                                "inputs": {
+                                  "VAL": {
+                                    "block": {
+                                      "type": "python_input",
+                                      "inputs": {
+                                        "PROMPT": {"shadow": {"type": "text", "fields": {"TEXT": "Guess a number (1-100): "}}}
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "controls_if",
+                              "extraState": {"elseIfCount": 1},
+                              "inputs": {
+                                "IF0": {
+                                  "block": {
+                                    "type": "logic_compare",
+                                    "fields": {"OP": "LT"},
+                                    "inputs": {
+                                      "A": {"block": {"type": "variables_get", "fields": {"VAR": {"id": "g"}}}},
+                                      "B": {"block": {"type": "variables_get", "fields": {"VAR": {"id": "ans"}}}}
+                                    }
+                                  }
+                                },
+                                "DO0": {
+                                  "block": {
+                                    "type": "text_print",
+                                    "inputs": {"TEXT": {"shadow": {"type": "text", "fields": {"TEXT": "Too small!"}}}}
+                                  }
+                                },
+                                "IF1": {
+                                  "block": {
+                                    "type": "logic_compare",
+                                    "fields": {"OP": "GT"},
+                                    "inputs": {
+                                      "A": {"block": {"type": "variables_get", "fields": {"VAR": {"id": "g"}}}},
+                                      "B": {"block": {"type": "variables_get", "fields": {"VAR": {"id": "ans"}}}}
+                                    }
+                                  }
+                                },
+                                "DO1": {
+                                  "block": {
+                                    "type": "text_print",
+                                    "inputs": {"TEXT": {"shadow": {"type": "text", "fields": {"TEXT": "Too big!"}}}}
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "text_print",
+                          "inputs": {"TEXT": {"shadow": {"type": "text", "fields": {"TEXT": "You win! 🎉"}}}}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+};
+
+document.getElementById('example-select').addEventListener('change', (e) => {
+  const val = e.target.value;
+  if (!val) return;
+  if (confirm('Load this example? This will replace your current workspace blocks.')) {
+    workspace.clear();
+    Blockly.serialization.workspaces.load(examples[val], workspace);
+  }
+  e.target.value = ""; // Reset selector
 });
 
 
