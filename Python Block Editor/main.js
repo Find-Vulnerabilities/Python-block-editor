@@ -439,7 +439,7 @@ function updateCode() {
   if (window.hljs) hljs.highlightElement(codeDiv);
 }
 
-workspace.addChangeListener(Blockly.Events.disableOrphans);
+
 workspace.addChangeListener(updateCode);
 workspace.addChangeListener((e) => {
   // Auto-save logic on every block change (ignore UI events like clicking)
@@ -580,3 +580,4 @@ fileInput.addEventListener('change', (e) => {
   reader.readAsText(file);
   fileInput.value = ''; // Reset input
 });
+
