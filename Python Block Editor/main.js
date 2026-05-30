@@ -165,13 +165,12 @@ Blockly.Blocks['import_module'] = {
 Blockly.Blocks['call_module_function_args'] = {
   init: function() {
     this.appendValueInput("ARGS")
-        .setCheck("Array")
         .appendField("call function")
         .appendField(new Blockly.FieldTextInput("math.sqrt"), "FUNC_NAME")
-        .appendField("with args (list)");
+        .appendField("with arg(s)");
     this.setOutput(true, null);
     this.setColour(230);
-    this.setTooltip("Call a function with dynamic arguments by attaching a list block");
+    this.setTooltip("Call a function with an argument");
   }
 };
 
@@ -325,10 +324,8 @@ pythonGenerator.forBlock['import_module'] = function(block) {
 
 pythonGenerator.forBlock['call_module_function_args'] = function(block, generator) {
   const funcName = block.getFieldValue('FUNC_NAME');
-  let args = generator.valueToCode(block, 'ARGS', generator.ORDER_NONE) || '[]';
-  // If arguments were provided as a list string natively from blockly [a, b, c], 
-  // in Python we use unpacking func(*[a, b, c])
-  const code = `${funcName}(*${args})`;
+  let args = generator.valueToCode(block, 'ARGS', generator.ORDER_NONE) || '';
+  const code = `${funcName}(${args})`;
   return [code, generator.ORDER_FUNCTION_CALL];
 };
 
@@ -582,5 +579,4 @@ fileInput.addEventListener('change', (e) => {
   reader.readAsText(file);
   fileInput.value = ''; // Reset input
 });
-
 
