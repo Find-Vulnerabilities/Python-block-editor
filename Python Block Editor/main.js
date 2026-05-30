@@ -142,6 +142,7 @@ const toolbox = {
       "contents": [
         { "kind": "block", "type": "import_module" },
         { "kind": "block", "type": "call_module_function_args" },
+        { "kind": "block", "type": "call_module_function_args_stmt" },
         { "kind": "block", "type": "time_sleep" },
         { "kind": "block", "type": "random_randint" }
       ]
@@ -171,6 +172,19 @@ Blockly.Blocks['call_module_function_args'] = {
     this.setOutput(true, null);
     this.setColour(230);
     this.setTooltip("Call a function with an argument");
+  }
+};
+
+Blockly.Blocks['call_module_function_args_stmt'] = {
+  init: function() {
+    this.appendValueInput("ARGS")
+        .appendField("call stmt")
+        .appendField(new Blockly.FieldTextInput("print"), "FUNC_NAME")
+        .appendField("with arg(s)");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("Call a function as a statement (ignores return value) and connects to other blocks from above and below");
   }
 };
 
@@ -334,6 +348,17 @@ pythonGenerator.forBlock['call_module_function_args'] = function(block, generato
   
   const code = `${funcName}(${args})`;
   return [code, generator.ORDER_FUNCTION_CALL];
+};
+
+pythonGenerator.forBlock['call_module_function_args_stmt'] = function(block, generator) {
+  const funcName = block.getFieldValue('FUNC_NAME');
+  let args = generator.valueToCode(block, 'ARGS', generator.ORDER_NONE) || '';
+  
+  if (args.startsWith('[') && args.endsWith(']')) {
+    args = args.slice(1, -1);
+  }
+  
+  return `${funcName}(${args})\n`;
 };
 
 pythonGenerator.forBlock['raw_python'] = function(block, generator) {
@@ -598,4 +623,5 @@ fileInput.addEventListener('change', (e) => {
   reader.readAsText(file);
   fileInput.value = ''; // Reset input
 });
+
 
