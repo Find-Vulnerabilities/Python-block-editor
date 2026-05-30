@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Block Editor</title>
+  <!-- Highlight.js for Syntax Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <!-- Pyodide for Browser Python Execution -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <style>
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      padding: 0; 
+      font-family: sans-serif; 
+    }
+    #toolbar { 
+      padding: 10px; 
+      background: #333; 
+      color: white;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    #toolbar button { 
+      padding: 5px 15px; 
+      cursor: pointer; 
+      border: none;
+      border-radius: 4px;
+      background: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
+    #toolbar button:hover {
+      background: #45a049;
+    }
+    #toolbar .title {
+      flex-grow: 1;
+      font-size: 1.2em;
+    }
+    #editor-container { 
+      display: flex; 
+      height: calc(100% - 48px); 
+    }
+    #blocklyDiv { 
+      width: 60%; 
+      height: 100%; 
+      border-right: 2px solid #ccc;
+    }
+    #right-panel {
+      width: 40%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #1e1e1e;
+    }
+    #codeDivContainer {
+      flex: 1;
+      margin: 0;
+      overflow-y: auto;
+      background: #282c34;
+    }
+    #codeDiv { 
+      margin: 0;
+      padding: 15px; 
+      min-height: 100%;
+      box-sizing: border-box; 
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 14px;
+    }
+    #console-container {
+      height: 35%;
+      background: #000;
+      color: #0f0;
+      display: flex;
+      flex-direction: column;
+      border-top: 2px solid #444;
+    }
+    #console-header {
+      background: #333;
+      color: #fff;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    #console-output {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div id="toolbar">
+    <div class="title">Python Block Editor</div>
+    <!-- 執行與控制 -->
+    <button id="btn-run" style="background: #2196F3;">▶ Run</button>
+    <button id="btn-stop" style="background: #ff9800;">🛑 Stop / Reset</button>
+    <button id="btn-clear-blocks" style="background: #f44336;">🗑️ Clear Blocks</button>
+    <!-- 檔案操作 -->
+    <button id="btn-export-py">Export Python (.py)</button>
+    <button id="btn-save-blocks">Save Blocks (.json)</button>
+    <button id="btn-load-blocks">Load Blocks (.json)</button>
+    <input type="file" id="file-input" style="display: none;" accept=".json" />
+  </div>
+  <div id="editor-container">
+    <div id="blocklyDiv"></div>
+    <div id="right-panel">
+      <pre id="codeDivContainer"><code id="codeDiv" class="language-python"># Your Python code will appear here...</code></pre>
+      <div id="console-container">
+        <div id="console-header">
+          Console Output
+          <button id="btn-clear-console" style="float: right; background: #555; color: white; border: none; cursor: pointer; border-radius: 3px; font-size: 11px; padding: 3px 8px;">Clear Console</button>
+        </div>
+        <div id="console-output">Loading Python environment... (Requires internet)</div>
+      </div>
+    </div>
+  </div>
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
