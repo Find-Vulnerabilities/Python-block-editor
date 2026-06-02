@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Block Editor</title>
+  
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <script type="module" crossorigin src="/assets/index-DqjLHQv9.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-C2oUA6rD.css">
+</head>
+<body>
+  <div id="toolbar">
+    <div class="title">Python Block Editor</div>
+    <select id="example-select" style="padding: 5px; border-radius: 4px; margin-right: 15px; font-weight: bold; cursor: pointer; background: #fff;">
+      <option value="">📁 Load Example...</option>
+      <option value="hello">👋 Hello World</option>
+      <option value="loop">🔢 Count to 10</option>
+      <option value="guess">🎲 Guess Number Game</option>
+      <option value="turtle">🐢 Turtle Square</option>
+    </select>
+    
+    <button id="btn-run" style="background: #2196F3;">▶ Run</button>
+    <button id="btn-stop" style="background: #ff9800;">🛑 Stop / Reset</button>
+    <button id="btn-clear-blocks" style="background: #f44336;">🗑️ Clear Blocks</button>
+    
+    <button id="btn-export-py">Export Python (.py)</button>
+    <button id="btn-save-blocks">Save Blocks (.json)</button>
+    <button id="btn-load-blocks">Load Blocks (.json)</button>
+    
+    <input type="file" id="file-input" style="display: none;" accept=".json" />
+  </div>
+
+  <div id="editor-container">
+    <div id="blocklyDiv"></div>
+    <div id="right-panel">
+      <pre id="codeDivContainer"><code id="codeDiv" class="language-python"># Your Python code will appear here...</code></pre>
+      
+      <div id="output-tabs">
+        <div id="tab-console" class="output-tab active"> Console Output</div>
+        <div id="tab-turtle" class="output-tab"> Turtle Graphics</div>
+      </div>
+
+      <div id="output-area">
+        <div id="canvas-container">
+          <canvas id="turtle-canvas" width="300" height="250"></canvas>
+        </div>
+        <div id="console-container">
+          <div id="console-header">
+            Console Output
+            <button id="btn-clear-console" style="float: right; background: #555; color: white; border: none; cursor: pointer; border-radius: 3px; font-size: 11px; padding: 3px 8px;">Clear Console</button>
+          </div>
+          <div id="console-output">Loading Python environment... (Requires internet)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>
