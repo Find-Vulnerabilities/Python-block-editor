@@ -3,25 +3,70 @@ import { initPyodideWorker, setConsoleOutput, setRunButton } from './pyodide/run
 import { turtleAPI } from './turtle/turtleGraphics.js';
 
 // Setup DOM dependencies for Pyodide worker and start it
+// PWA Install — capture the install prompt for custom button
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const btn = document.getElementById('btn-install-pwa');
+  if (btn) {
+    btn.style.display = '';
+    btn.classList.add('pulse');
+  }
+});
+
+// Register Service Worker for PWA (offline support)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then((reg) => {
+      console.log('[PWA] Service Worker registered:', reg.scope);
+    }).catch((err) => {
+      console.warn('[PWA] Service Worker registration failed:', err);
+    });
+  });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
   const consoleOutput = document.getElementById('console-output');
   const runBtn = document.getElementById('btn-run');
-  
+
   if (consoleOutput) setConsoleOutput(consoleOutput);
   if (runBtn) setRunButton(runBtn);
-  
+
   // Attach turtleAPI to window to match expectations if any code tries to access it
   window.turtleAPI = turtleAPI;
-  
+
   // Start python environment
   initPyodideWorker();
   turtleAPI.reset();
-  
+
   // Initialize Blockly Workspace
   initWorkspace();
-  
+
   // Attach Event Listeners
   setupEventListeners();
+
+  // PWA Install button
+  const installBtn = document.getElementById('btn-install-pwa');
+  if (installBtn) {
+    // Hide if already installed
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      installBtn.style.display = 'none';
+    }
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) {
+        alert('📲 Click the install icon in your browser address bar, or use "Add to Home Screen" in your browser menu.');
+        return;
+      }
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+      installBtn.classList.remove('pulse');
+      console.log('[PWA] Install:', outcome);
+    });
+  }
 });
 
 function setupEventListeners() {

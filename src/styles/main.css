@@ -28,6 +28,61 @@ html, body {
   background: #45a049;
 }
 
+/* PWA Install button */
+.btn-install {
+  background: linear-gradient(135deg, #7C4DFF, #E040FB) !important;
+  padding: 8px 16px !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  border-radius: 20px !important;
+  letter-spacing: 0.3px;
+  box-shadow: 0 2px 8px rgba(124, 77, 255, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s !important;
+  white-space: nowrap;
+  animation: install-glow 2s ease-in-out infinite;
+}
+.btn-install:hover {
+  transform: scale(1.06) !important;
+  box-shadow: 0 4px 16px rgba(124, 77, 255, 0.6) !important;
+}
+.btn-install.pulse {
+  animation: install-pulse 0.6s ease-in-out 3;
+}
+@keyframes install-glow {
+  0%, 100% { box-shadow: 0 2px 8px rgba(124, 77, 255, 0.4); }
+  50% { box-shadow: 0 2px 20px rgba(224, 64, 251, 0.7); }
+}
+@keyframes install-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+/* Toolbar separator */
+.toolbar-sep {
+  width: 1px;
+  height: 28px;
+  background: #555;
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
+/* Download/save buttons — more prominent */
+.btn-download {
+  position: relative;
+  padding: 5px 15px !important;
+  font-size: 13px !important;
+  letter-spacing: 0.3px;
+  border: 2px solid rgba(255,255,255,0.2) !important;
+  transition: transform 0.15s, box-shadow 0.15s !important;
+}
+.btn-download:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+}
+.btn-download:active {
+  transform: translateY(0);
+}
+
 #toolbar .title {
   flex-grow: 1;
   font-size: 1.2em;

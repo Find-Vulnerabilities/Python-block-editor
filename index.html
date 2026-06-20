@@ -4,7 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Python Block Editor</title>
-  
+
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#4CAF50">
+  <meta name="description" content="Learn Python with blocks — like Scratch, but generates real Python code with turtle graphics">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PyBlocks">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+
   <!-- Import Map - 告訴瀏覽器去哪裡找 Blockly -->
   <script type="importmap">
     {
@@ -26,6 +35,11 @@
 <body>
   <div id="toolbar">
     <div class="title">Python Block Editor</div>
+
+    <button id="btn-install-pwa" class="btn-install" style="display:none" title="Install this app to your desktop">
+      Install App
+    </button>
+
     <select id="example-select" style="padding: 5px; border-radius: 4px; margin-right: 15px; font-weight: bold; cursor: pointer; background: #fff;">
       <option value="">📁 Load Example...</option>
       <option value="hello">👋 Hello World</option>
@@ -37,10 +51,12 @@
     <button id="btn-run" style="background: #2196F3;">▶ Run</button>
     <button id="btn-stop" style="background: #ff9800;">🛑 Stop / Reset</button>
     <button id="btn-clear-blocks" style="background: #f44336;">🗑️ Clear Blocks</button>
-    
-    <button id="btn-export-py">Export Python (.py)</button>
-    <button id="btn-save-blocks">Save Blocks (.json)</button>
-    <button id="btn-load-blocks">Load Blocks (.json)</button>
+
+    <span class="toolbar-sep"></span>
+
+    <button id="btn-export-py" class="btn-download" style="background: #4CAF50;">⬇ Export .py</button>
+    <button id="btn-save-blocks" class="btn-download" style="background: #FF9800;">💾 Save .json</button>
+    <button id="btn-load-blocks" class="btn-download" style="background: #2196F3;">📂 Load .json</button>
     
     <input type="file" id="file-input" style="display: none;" accept=".json" />
   </div>
