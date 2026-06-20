@@ -10,6 +10,11 @@ import { examples } from '../config/examples.js';
 
 let workspace = null;
 
+// Strip await for display/export (standard Python doesn't support top-level await)
+function stripAwait(code) {
+  return code.replace(/^(\s*)await /gm, '$1');
+}
+
 export function initWorkspace() {
   // Set language to English
   Blockly.setLocale(En);
@@ -43,8 +48,9 @@ export function initWorkspace() {
   function updateCode() {
     const code = pythonGenerator.workspaceToCode(workspace);
     if(codeDiv) {
-      codeDiv.textContent = code || '# Your Python code will appear here...';
-      
+      // Display without await for clean standard Python
+      codeDiv.textContent = stripAwait(code) || '# Your Python code will appear here...';
+
       // Syntax Highlighting
       delete codeDiv.dataset.highlighted;
       if (window.hljs) hljs.highlightElement(codeDiv);
@@ -65,7 +71,7 @@ export function initWorkspace() {
 
 export function exportPython() {
   if(!workspace) return;
-  const code = pythonGenerator.workspaceToCode(workspace);
+  const code = stripAwait(pythonGenerator.workspaceToCode(workspace));
   const blob = new Blob([code], { type: 'text/plain' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

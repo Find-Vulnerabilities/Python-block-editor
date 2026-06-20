@@ -41,7 +41,7 @@ pythonGenerator.forBlock['raw_python_stmt'] = function(block, generator) {
 pythonGenerator.forBlock['time_sleep'] = function(block, generator) {
   pythonGenerator.definitions_['import_time'] = 'import time';
   const time = generator.valueToCode(block, 'TIME', generator.ORDER_NONE) || '1';
-  return `time.sleep(${time})\n`;  // 移除 await
+  return `await time.sleep(${time})\n`;
 };
 
 pythonGenerator.forBlock['random_randint'] = function(block, generator) {
@@ -166,108 +166,108 @@ pythonGenerator.forBlock['type_cast'] = function(block, generator) {
 
 pythonGenerator.forBlock['python_input'] = function(block, generator) {
   const promptText = generator.valueToCode(block, 'PROMPT', generator.ORDER_NONE) || '""';
-  return [`input(${promptText})`, generator.ORDER_FUNCTION_CALL];  // 移除 await
+  return [`await input(${promptText})`, generator.ORDER_FUNCTION_CALL];
 };
 
-// Turtle Generators (全部移除 await)
-pythonGenerator.forBlock['turtle_clear'] = function(block) { 
-  return "turtle.clear()\n"; 
+// Turtle Generators
+pythonGenerator.forBlock['turtle_clear'] = function(block) {
+  return "await turtle.clear()\n";
 };
 
 pythonGenerator.forBlock['turtle_speed'] = function(block, generator) {
   const speed = generator.valueToCode(block, 'SPEED', generator.ORDER_NONE) || '5';
-  return `turtle.speed(${speed})\n`;
+  return `await turtle.speed(${speed})\n`;
 };
 
-pythonGenerator.forBlock['turtle_xcor'] = function(block) { 
-  return ["turtle.xcor()", pythonGenerator.ORDER_FUNCTION_CALL]; 
+pythonGenerator.forBlock['turtle_xcor'] = function(block) {
+  return ["await turtle.xcor()", pythonGenerator.ORDER_FUNCTION_CALL];
 };
 
-pythonGenerator.forBlock['turtle_ycor'] = function(block) { 
-  return ["turtle.ycor()", pythonGenerator.ORDER_FUNCTION_CALL]; 
+pythonGenerator.forBlock['turtle_ycor'] = function(block) {
+  return ["await turtle.ycor()", pythonGenerator.ORDER_FUNCTION_CALL];
 };
 
-pythonGenerator.forBlock['turtle_import'] = function(block) { 
-  return "import turtle\n"; 
+pythonGenerator.forBlock['turtle_import'] = function(block) {
+  return "import turtle\n";
 };
 
 pythonGenerator.forBlock['turtle_forward'] = function(block, generator) {
   const dist = generator.valueToCode(block, 'DISTANCE', generator.ORDER_NONE) || '0';
-  return `turtle.forward(${dist})\n`;
+  return `await turtle.forward(${dist})\n`;
 };
 
 pythonGenerator.forBlock['turtle_backward'] = function(block, generator) {
   const dist = generator.valueToCode(block, 'DISTANCE', generator.ORDER_NONE) || '0';
-  return `turtle.backward(${dist})\n`;
+  return `await turtle.backward(${dist})\n`;
 };
 
 pythonGenerator.forBlock['turtle_right'] = function(block, generator) {
   const angle = generator.valueToCode(block, 'ANGLE', generator.ORDER_NONE) || '0';
-  return `turtle.right(${angle})\n`;
+  return `await turtle.right(${angle})\n`;
 };
 
 pythonGenerator.forBlock['turtle_left'] = function(block, generator) {
   const angle = generator.valueToCode(block, 'ANGLE', generator.ORDER_NONE) || '0';
-  return `turtle.left(${angle})\n`;
+  return `await turtle.left(${angle})\n`;
 };
 
-pythonGenerator.forBlock['turtle_penup'] = function(block) { 
-  return "turtle.penup()\n"; 
+pythonGenerator.forBlock['turtle_penup'] = function(block) {
+  return "await turtle.penup()\n";
 };
 
-pythonGenerator.forBlock['turtle_pendown'] = function(block) { 
-  return "turtle.pendown()\n"; 
+pythonGenerator.forBlock['turtle_pendown'] = function(block) {
+  return "await turtle.pendown()\n";
 };
 
 pythonGenerator.forBlock['turtle_color'] = function(block, generator) {
   const color = generator.valueToCode(block, 'COLOR', generator.ORDER_NONE) || "'black'";
-  return `turtle.color(${color})\n`;
+  return `await turtle.color(${color})\n`;
 };
 
 pythonGenerator.forBlock['turtle_pensize'] = function(block, generator) {
   const size = generator.valueToCode(block, 'SIZE', generator.ORDER_NONE) || '1';
-  return `turtle.pensize(${size})\n`;
+  return `await turtle.pensize(${size})\n`;
 };
 
 pythonGenerator.forBlock['turtle_circle'] = function(block, generator) {
   const radius = generator.valueToCode(block, 'RADIUS', generator.ORDER_NONE) || '50';
-  return `turtle.circle(${radius})\n`;
+  return `await turtle.circle(${radius})\n`;
 };
 
 pythonGenerator.forBlock['turtle_goto'] = function(block, generator) {
   const x = generator.valueToCode(block, 'X', generator.ORDER_NONE) || '0';
   const y = generator.valueToCode(block, 'Y', generator.ORDER_NONE) || '0';
-  return `turtle.goto(${x}, ${y})\n`;
+  return `await turtle.goto(${x}, ${y})\n`;
 };
 
-pythonGenerator.forBlock['turtle_begin_fill'] = function(block) { 
-  return "turtle.begin_fill()\n"; 
+pythonGenerator.forBlock['turtle_begin_fill'] = function(block) {
+  return "await turtle.begin_fill()\n";
 };
 
-pythonGenerator.forBlock['turtle_end_fill'] = function(block) { 
-  return "turtle.end_fill()\n"; 
+pythonGenerator.forBlock['turtle_end_fill'] = function(block) {
+  return "await turtle.end_fill()\n";
 };
 
 pythonGenerator.forBlock['turtle_fillcolor'] = function(block, generator) {
   const color = generator.valueToCode(block, 'COLOR', generator.ORDER_NONE) || '"black"';
-  return `turtle.fillcolor(${color})\n`;
+  return `await turtle.fillcolor(${color})\n`;
 };
 
 pythonGenerator.forBlock['turtle_setheading'] = function(block, generator) {
   const angle = generator.valueToCode(block, 'ANGLE', generator.ORDER_NONE) || '0';
-  return `turtle.setheading(${angle})\n`;
+  return `await turtle.setheading(${angle})\n`;
 };
 
-pythonGenerator.forBlock['turtle_heading'] = function(block) { 
-  return ["turtle.heading()", pythonGenerator.ORDER_FUNCTION_CALL]; 
+pythonGenerator.forBlock['turtle_heading'] = function(block) {
+  return ["await turtle.heading()", pythonGenerator.ORDER_FUNCTION_CALL];
 };
 
 pythonGenerator.forBlock['turtle_write'] = function(block, generator) {
   const text = generator.valueToCode(block, 'TEXT', generator.ORDER_NONE) || '""';
-  return `turtle.write(${text})\n`;
+  return `await turtle.write(${text})\n`;
 };
 
-pythonGenerator.forBlock['turtle_stamp'] = function(block) { 
-  return "turtle.stamp()\n"; 
+pythonGenerator.forBlock['turtle_stamp'] = function(block) {
+  return "await turtle.stamp()\n";
 };
 }

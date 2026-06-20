@@ -47,9 +47,11 @@ function setupEventListeners() {
       
       const canvas = document.getElementById('turtle-canvas');
       if (canvas && window.turtleAPI) {
-        if (canvas.width !== canvas.parentElement.clientWidth) {
-          canvas.width = canvas.parentElement.clientWidth * 0.9;
-          canvas.height = canvas.parentElement.clientHeight * 0.9;
+        const targetW = Math.floor(canvas.parentElement.clientWidth * 0.9);
+        const targetH = Math.floor(canvas.parentElement.clientHeight * 0.9);
+        if (canvas.width !== targetW || canvas.height !== targetH) {
+          canvas.width = targetW;
+          canvas.height = targetH;
           window.turtleAPI.reset();
         }
       }

@@ -26,12 +26,19 @@ export const turtleAPI = {
   home: function() {
     const canvas = document.getElementById('turtle-canvas');
     if(!canvas) return;
+    const ox = this.x, oy = this.y;
     this.x = canvas.width / 2;
     this.y = canvas.height / 2;
     this.angle = -90;
     const ctx = canvas.getContext('2d');
-    if(this.penDown) { ctx.lineTo(this.x, this.y); ctx.stroke(); }
-    else { ctx.moveTo(this.x, this.y); }
+    if(this.penDown) {
+      ctx.beginPath();
+      ctx.moveTo(ox, oy);
+      ctx.lineTo(this.x, this.y);
+      ctx.stroke();
+    } else {
+      ctx.moveTo(this.x, this.y);
+    }
     this._addToFill(this.x, this.y);
   },
   forward: function(d) {
@@ -39,9 +46,12 @@ export const turtleAPI = {
     if(!canvas) return;
     const ctx = canvas.getContext('2d');
     const rad = this.angle * (Math.PI / 180);
+    const ox = this.x, oy = this.y;
     this.x += d * Math.cos(rad);
     this.y += d * Math.sin(rad);
     if(this.penDown) {
+      ctx.beginPath();
+      ctx.moveTo(ox, oy);
       ctx.lineTo(this.x, this.y);
       ctx.stroke();
     } else {
@@ -52,21 +62,28 @@ export const turtleAPI = {
   backward: function(d) { this.forward(-d); },
   right: function(a) { this.angle += a; },
   left: function(a) { this.angle -= a; },
-  setheading: function(a) { this.angle = a - 90; },
-  heading: function() { let h = this.angle + 90; while(h < 0) h+= 360; return h % 360; },
+  setheading: function(a) { this.angle = -a; },
+  heading: function() { let h = -this.angle; while(h < 0) h+= 360; return h % 360; },
   penup: function() { this.penDown = false; },
   pendown: function() { this.penDown = true; },
   color: function(c) {
     const canvas = document.getElementById('turtle-canvas');
     if(canvas) {
       this.pencol = c;
-      canvas.getContext('2d').strokeStyle = c;
-      canvas.getContext('2d').beginPath(); 
-      canvas.getContext('2d').moveTo(this.x, this.y);
+      this.fillcol = c;
+      const ctx = canvas.getContext('2d');
+      ctx.strokeStyle = c;
+      ctx.fillStyle = c;
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);
     }
   },
   fillcolor: function(c) {
     this.fillcol = c;
+    const canvas = document.getElementById('turtle-canvas');
+    if(canvas) {
+      canvas.getContext('2d').fillStyle = c;
+    }
   },
   begin_fill: function() {
     this.fillpath = [{x: this.x, y: this.y}];
@@ -127,11 +144,18 @@ export const turtleAPI = {
     const [dx, dy] = args;
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
+    const ox = this.x, oy = this.y;
     this.x = cx + dx;
-    this.y = cy - dy; 
+    this.y = cy - dy;
     const ctx = canvas.getContext('2d');
-    if(this.penDown) { ctx.lineTo(this.x, this.y); ctx.stroke(); }
-    else { ctx.moveTo(this.x, this.y); }
+    if(this.penDown) {
+      ctx.beginPath();
+      ctx.moveTo(ox, oy);
+      ctx.lineTo(this.x, this.y);
+      ctx.stroke();
+    } else {
+      ctx.moveTo(this.x, this.y);
+    }
     this._addToFill(this.x, this.y);
   },
   circle: function(r) {

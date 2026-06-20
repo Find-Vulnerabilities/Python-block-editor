@@ -131,7 +131,7 @@ self.request_turtle = function(cmd, arg) {
   if (cmd === 'speed') {
     let s = Number(arg) || 5;
     if (s === 0) turtleSpeedDelay = 0;
-    else turtleSpeedDelay = Math.max(1, 40 - (s * 4));
+    else turtleSpeedDelay = Math.max(5, 220 - (s * 20)); // speed 1 → 200ms, speed 10 → 20ms
     return Promise.resolve();
   }
   return new Promise((resolve) => {
