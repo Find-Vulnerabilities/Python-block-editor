@@ -15,6 +15,34 @@ Blockly.Blocks['import_module'] = {
   }
 };
 
+Blockly.Blocks['from_import'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("from")
+        .appendField(new Blockly.FieldTextInput("math"), "MODULE_NAME")
+        .appendField("import")
+        .appendField(new Blockly.FieldTextInput("sqrt"), "ITEM_NAME");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("Import specific items from a module: from X import Y (use commas for multiple items)");
+  }
+};
+
+Blockly.Blocks['import_as'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField("import")
+        .appendField(new Blockly.FieldTextInput("numpy"), "MODULE_NAME")
+        .appendField("as")
+        .appendField(new Blockly.FieldTextInput("np"), "ALIAS");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(230);
+    this.setTooltip("Import a module with an alias: import X as Y");
+  }
+};
+
 Blockly.Blocks['call_module_function_args'] = {
   init: function() {
     this.appendValueInput("ARGS")

@@ -179,6 +179,8 @@ export const toolbox = {
         { "kind": "block", "type": "import_module", "fields": { "MODULE_NAME": "time" } },
         { "kind": "block", "type": "import_module", "fields": { "MODULE_NAME": "datetime" } },
         { "kind": "block", "type": "import_module", "fields": { "MODULE_NAME": "json" } },
+        { "kind": "block", "type": "from_import", "fields": { "MODULE_NAME": "math", "ITEM_NAME": "sqrt" } },
+        { "kind": "block", "type": "import_as", "fields": { "MODULE_NAME": "numpy", "ALIAS": "np" } },
         { "kind": "block", "type": "call_module_function_args" },
         { "kind": "block", "type": "call_module_function_args_stmt" },
         { "kind": "block", "type": "time_sleep" },

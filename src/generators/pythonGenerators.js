@@ -7,6 +7,18 @@ pythonGenerator.forBlock['import_module'] = function(block) {
   return 'import ' + moduleName + '\n';
 };
 
+pythonGenerator.forBlock['from_import'] = function(block) {
+  const moduleName = block.getFieldValue('MODULE_NAME');
+  const itemName = block.getFieldValue('ITEM_NAME');
+  return 'from ' + moduleName + ' import ' + itemName + '\n';
+};
+
+pythonGenerator.forBlock['import_as'] = function(block) {
+  const moduleName = block.getFieldValue('MODULE_NAME');
+  const alias = block.getFieldValue('ALIAS');
+  return 'import ' + moduleName + ' as ' + alias + '\n';
+};
+
 pythonGenerator.forBlock['call_module_function_args'] = function(block, generator) {
   const funcName = block.getFieldValue('FUNC_NAME');
   let args = generator.valueToCode(block, 'ARGS', generator.ORDER_NONE) || '';
