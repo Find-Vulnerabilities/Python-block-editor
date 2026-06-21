@@ -1,23 +1,8 @@
-<svg width="300" height="250" xmlns="http://www.w3.org/2000/svg">
-
-  
-  <rect x="0" y="0" width="300" height="250" fill="lightblue"/>
-
- 
-  <rect x="120" y="60" width="60" height="60" fill="red" stroke="black" stroke-width="2"/>
-
-  
-  <rect x="100" y="120" width="60" height="60" fill="yellow" stroke="black" stroke-width="2"/>
-
-
-  <rect x="160" y="120" width="60" height="60" fill="green" stroke="black" stroke-width="2"/>
-
-
-  <text x="150" y="210" font-size="18" text-anchor="middle" fill="black" font-family="Arial">
-    Python Block Editor
-  </text>
-
+<?xml version="1.0" encoding="UTF-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="600" height="500">
+<path d="M0 0 C198 0 396 0 600 0 C600 165 600 330 600 500 C402 500 204 500 0 500 C0 335 0 170 0 0 Z " fill="#ADD8E6" transform="translate(0,0)"/>
+<path d="M0 0 C40.92 0 81.84 0 124 0 C124 39.6 124 79.2 124 120 C150.4 120 176.8 120 204 120 C204 160.92 204 201.84 204 244 C123.48 244 42.96 244 -40 244 C-40 203.08 -40 162.16 -40 120 C-26.8 120 -13.6 120 0 120 C0 80.4 0 40.8 0 0 Z " fill="#008000" transform="translate(238,118)"/>
+<path d="M0 0 C38.28 0 76.56 0 116 0 C116 38.28 116 76.56 116 116 C77.72 116 39.44 116 0 116 C0 77.72 0 39.44 0 0 Z " fill="#FFFF00" transform="translate(202,242)"/>
+<path d="M0 0 C38.28 0 76.56 0 116 0 C116 38.28 116 76.56 116 116 C77.72 116 39.44 116 0 116 C0 77.72 0 39.44 0 0 Z " fill="#FF0000" transform="translate(242,122)"/>
+<path d="M0 0 C40.92 0 81.84 0 124 0 C124 39.6 124 79.2 124 120 C150.4 120 176.8 120 204 120 C204 160.92 204 201.84 204 244 C123.48 244 42.96 244 -40 244 C-40 203.08 -40 162.16 -40 120 C-26.8 120 -13.6 120 0 120 C0 80.4 0 40.8 0 0 Z M4 4 C4 42.28 4 80.56 4 120 C42.28 120 80.56 120 120 120 C120 81.72 120 43.44 120 4 C81.72 4 43.44 4 4 4 Z M-36 124 C-36 162.28 -36 200.56 -36 240 C2.28 240 40.56 240 80 240 C80 201.72 80 163.44 80 124 C41.72 124 3.44 124 -36 124 Z M84 124 C84 162.28 84 200.56 84 240 C122.28 240 160.56 240 200 240 C200 201.72 200 163.44 200 124 C161.72 124 123.44 124 84 124 Z " fill="#000000" transform="translate(238,118)"/>
 </svg>
-
-
-
