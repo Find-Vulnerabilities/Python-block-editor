@@ -1,288 +1,296 @@
-
 # Python Block Editor
 
-## A Professional Visual Programming Environment for Python Education
+## A Visual Programming Environment for Python — In the Browser
 
-### Executive Summary
+### Overview
 
-The Python Block Editor is a sophisticated web-based integrated development environment (IDE) that bridges the gap between visual programming and professional Python development. Built on Google's Blockly framework and powered by Pyodide (Python running entirely in the browser via WebAssembly), this platform enables learners and educators to construct Python programs using intuitive drag-and-drop blocks while simultaneously observing the generated code and executing it in a live environment. This document provides comprehensive documentation covering the rationale, applications, and operational procedures of the Python Block Editor.
+The Python Block Editor is a browser-based visual programming environment that lets you build Python programs by dragging and connecting blocks. Powered by **Google Blockly v11** for the visual interface and **Pyodide** (Python-on-WebAssembly) for execution, it generates real, readable Python code in real time and runs it entirely in your browser — no server, no installation.
 
----
+It supports **two workflows**:
 
-## Part One: Why Use a Python Block Editor?
+1. **Single File** — A quick scratchpad for experimenting with blocks and running one-off scripts. Auto-saves to localStorage.
+2. **Multi-file Project** — A full project manager with a VSCode-style file explorer, IndexedDB-backed virtual filesystem, and cross-file Python execution.
 
-### 1.1 Addressing the Syntax Barrier in Programming Education
-
-Traditional text-based programming presents a significant initial hurdle for novice programmers: syntax errors. Beginners frequently encounter frustration when a missing colon, incorrect indentation, or mismatched parenthesis prevents their program from running, even when their logical understanding is sound. The Python Block Editor eliminates this barrier entirely by generating syntactically correct Python code from visual blocks. Learners can focus on computational thinking, algorithmic logic, and problem-solving strategies without being derailed by syntax minutiae.
-
-### 1.2 Dual-Mode Learning: Visual and Textual Simultaneously
-
-A distinctive pedagogical advantage of this editor is its real-time code generation. As users assemble blocks in the visual workspace, the corresponding Python code appears instantly in the adjacent panel. This synchronous display creates a powerful learning feedback loop: learners observe how abstract block structures translate into concrete Python syntax. Over time, users internalize Python's grammar, indentation rules, and function call conventions through repeated exposure, facilitating a natural transition from block-based to text-based programming.
-
-### 1.3 Lowering the Cognitive Load for Complex Concepts
-
-Advanced programming concepts such as loops, conditionals, list operations, dictionary manipulations, exception handling, object-oriented programming, and recursion impose substantial cognitive demands. The visual nature of block programming externalizes these concepts, making relationships between program components explicit. For instance, a nested loop structure becomes visually apparent through indented block arrangements; a try-except block clearly delineates error-handling pathways; a class definition visually contains its methods. This spatial representation reduces working memory load and accelerates conceptual mastery.
-
-### 1.4 Accessibility and Inclusivity
-
-The visual, drag-and-drop interface accommodates diverse learning styles and accessibility needs. Users with dyslexia may find block-based programming more approachable than dense text; those with limited typing proficiency can construct complex programs without extensive keyboard input; young learners and hobbyists can engage with programming concepts before developing advanced literacy skills. Furthermore, the browser-based deployment eliminates installation barriers, enabling immediate access on any device with an internet connection.
-
-### 1.5 Rapid Prototyping and Experimentation
-
-For educators demonstrating concepts or developers exploring algorithmic ideas, the block editor enables extraordinarily rapid prototyping. Blocks can be reconfigured, inserted, or removed without concern for syntactic breakage. The immediate feedback loop—modify blocks, run code, observe output, iterate—compresses development cycles and encourages experimentation. This agility is particularly valuable in classroom settings where time is limited and multiple examples must be explored.
-
-### 1.6 Safe Execution Environment
-
-The editor executes Python code within a Web Worker sandbox using Pyodide, isolating execution from the host page. This architecture provides security against malicious code and prevents infinite loops or resource exhaustion from crashing the interface. The integrated Stop button provides immediate termination capability, crucial for educational settings where students may inadvertently create non-terminating programs.
+It's also a **PWA** (Progressive Web App) — you can install it to your desktop and use it offline once the initial assets are cached.
 
 ---
 
-## Part Two: What Can You Build With This Editor?
+## Features at a Glance
 
-### 2.1 Educational Domains
-
-**Introductory Programming Courses:** The editor is suitable for teaching fundamental concepts including variables, data types, arithmetic operations, conditional statements (if-elif-else), iteration (for loops, while loops), functions, and recursion. The variable management system automatically tracks declared variables, while the procedures category supports function definition and invocation.
-
-**Data Structures Instruction:** Comprehensive blocks support list creation, indexing, slicing, appending, and length operations. Dictionary blocks enable creation, key-based access, assignment, deletion, and key extraction. Tuple blocks support creation, indexing, length queries, slicing, counting, and unpacking operations. These blocks make abstract data structures tangible and manipulable.
-
-**Algorithm Visualization:** Educators can demonstrate sorting algorithms, search algorithms, mathematical computations (Fibonacci, factorial, prime detection), and recursive functions. The real-time Python output allows students to see how algorithmic logic translates to executable code.
-
-**Game Development:** The random number generation and input handling blocks enable construction of interactive games including number guessing games, dice simulators, quiz applications, and simple text adventures. The console output provides immediate feedback on game logic.
-
-**Turtle Graphics Programming:** The extensive turtle graphics library supports teaching geometric concepts, coordinate systems, angle measurements, repetition (via loops to draw regular polygons), color theory (through pen and fill colors), and computational creativity. Students can draw complex patterns, fractals, spirals, and artistic compositions while learning programming fundamentals.
-
-**Object-Oriented Programming:** Dedicated blocks for class definition, object instantiation, attribute access, and attribute assignment provide an accessible entry point to OOP paradigms. Learners can define classes with methods (via the statement input), create objects, and manipulate object state.
-
-**Exception Handling Education:** The try-except block with named exception variable teaches defensive programming practices. Students learn to anticipate errors, gracefully handle exceptional conditions, and understand Python's exception hierarchy.
-
-### 2.2 Professional and Practical Applications
-
-**Curriculum Development:** Educators can design structured programming assignments by saving block configurations as JSON files, distributing them to students, and evaluating completed workspaces. The example selector provides pre-configured demonstrations that can be extended for specific lessons.
-
-**Code Generation and Export:** The Python export feature produces standard .py files compatible with any Python interpreter. This enables workflow integration: design algorithms visually, export the generated code, and incorporate it into larger projects or submit for assessment.
-
-**Documentation and Demonstration:** Technical trainers and documentation authors can use the editor to create interactive code examples. The visual block representation often communicates algorithmic intent more clearly than raw code alone, making the editor valuable for presentations and tutorials.
-
-**Accessibility Tooling:** For organizations serving users with diverse abilities, the block editor provides an alternative programming interface that reduces barriers to entry for coding education and lightweight automation tasks.
-
-### 2.3 Supported Language Features Summary
-
-| Category | Specific Features |
-|----------|-------------------|
-| Core Python | Variables, arithmetic, comparison, logical operations, conditionals, loops |
-| Data Structures | Lists (create, append, index, length), Dictionaries (get, set, delete, keys), Tuples (create, index, slice, count, unpack) |
-| Functions | Custom function definition and invocation (via Blockly's built-in procedure blocks) |
-| Object-Oriented | Class definition, instantiation, attribute get/set |
-| Error Handling | Try-except with exception variable |
-| Input/Output | print() statements, input() prompts, console output |
-| External Modules | import statements, function calls from math, random, time, datetime, json |
-| Type Conversion | int(), float(), str() casting |
-| Turtle Graphics | Movement, rotation, pen control, color, fill, stamp, write, positioning |
+| Category | What You Get |
+|---|---|
+| **Visual Editor** | Drag-and-drop block workspace (Blockly v11) with instant Python code preview |
+| **Live Code Gen** | Real-time syntax-highlighted Python output (Highlight.js, atom-one-dark theme) |
+| **Browser Python** | Pyodide v0.24.1 — CPython 3.11 running on WebAssembly in a Web Worker |
+| **Turtle Graphics** | Full turtle module on an HTML canvas — movement, pen, color, fill, stamp, write |
+| **Multi-file Projects** | IndexedDB-backed projects with folders, multiple .py/.json/.txt files |
+| **File Explorer** | VSCode-style sidebar tree: new file/folder, rename, delete, duplicate, download |
+| **Project I/O** | Export as .pyblocks-project.json or .zip; import .json projects; download individual files |
+| **Examples** | Hello World, Count to 10, Guess Number Game, Turtle Square — load from toolbar |
+| **PWA** | Install to desktop, service worker caching, works offline after first load |
+| **Homepage** | Landing screen with Single File / Multi-file Project cards, recent projects, import |
+| **Block Toolbox** | 13 categories covering logic, loops, math, text, lists, tuples, dicts, OOP, exceptions, turtle, raw code, external modules, type casting |
 
 ---
 
-## Part Three: How to Use the Python Block Editor
+## Block Toolbox — Complete Category List
 
-### 3.1 System Requirements and Initial Setup
+### 1. Logic
+`if/elif/else`, comparison operators (`==`, `!=`, `<`, `>`, `<=`, `>=`), `and`/`or`, `True`/`False`, `not`
 
-**Browser Compatibility:** The editor requires a modern browser with WebAssembly support and JavaScript ES2020 capabilities. Recommended browsers include the latest versions of Google Chrome, Mozilla Firefox, Microsoft Edge, or Safari. Internet connectivity is required for initial Pyodide loading (approximately 6-8 MB download) and Blockly library retrieval.
+### 2. Loops
+`for i in range(n)`, `for i from X to Y step Z`, `while`/`until`, `break`/`continue`
 
-**No Installation Required:** The editor runs entirely in the browser. Serve the files through any static web server (including local development servers via `npm run dev` or simple HTTP servers) and access through any modern browser.
+### 3. Math
+Numbers, arithmetic (`+`, `-`, `*`, `/`, `**`), trig (`sin`, `cos`, `tan`), constants (`π`, `e`), rounding, modulo, random int/float, list math (sum, min, max, average, median, etc.)
 
-### 3.2 Workspace Orientation
+### 4. Text
+String literals, `print()`, string join, length, `input()` (browser prompt with type casting support)
 
-Upon loading the editor, the interface presents three primary zones:
+### 5. Type Casting
+`int()`, `float()`, `str()` — dropdown selector, useful for converting `input()` strings
 
-**Toolbar (Top):** Contains action buttons for execution, workspace management, file operations, and example loading. The example selector provides instant access to pre-configured demonstrations including Hello World, counting loops, number guessing games, and turtle graphics squares.
+### 6. Lists & Dicts (Arrays)
+List create/repeat/append/length/isEmpty/indexOf/getIndex/setIndex, plus **Tuple blocks**: create, index, length, slice, count, index-find, unpack
 
-**Block Workspace (Left, 60% width):** This is the primary construction area. The toolbox on the left edge organizes blocks into categories: Logic, Loops, Math, Text, Type Casting, Lists & Dicts, Variables, Functions, Turtle Graphics, Dictionaries, OOP (Classes), Exceptions, Advanced/Raw Code, and External Modules. Drag blocks from the toolbox into the workspace to construct programs.
+### 7. Variables
+Blockly's built-in variable management — create, rename, delete, getter and setter blocks
 
-**Code and Output Panel (Right, 40% width):** This panel has two modes accessible via tabs:
-- The Code tab displays the generated Python code with syntax highlighting via Highlight.js, updating in real-time as blocks are modified.
-- The Output area contains two sub-tabs: Console Output (displaying program stdout/stderr) and Turtle Graphics (canvas for visual output).
+### 8. Functions
+Blockly's built-in procedure system — define functions with parameters, return values; callable blocks auto-generated
 
-### 3.3 Building Programs with Blocks
+### 9. Turtle Graphics (21 blocks)
+`import turtle`, `forward`, `backward`, `right`, `left`, `penup`, `pendown`, `color`, `pensize`, `circle`, `goto(x,y)`, `speed`, `clear`, `xcor`, `ycor`, `begin_fill`, `end_fill`, `fillcolor`, `setheading`, `heading`, `write`, `stamp`
 
-**Basic Construction Workflow:**
+### 10. Dictionaries
+Empty dict `{}`, get by key, set key-value, delete key, get all keys
 
-1. Locate a desired block in the toolbox category
-2. Click and drag the block into the workspace
-3. Release the mouse button to place the block
-4. Connect blocks by dragging them near compatible connection points (indicated by visual highlighting)
-5. Configure block fields by clicking on text fields, number fields, or dropdown menus
-6. Observe the generated Python code appearing in the right panel
+### 11. OOP (Classes)
+`class` definition (with statement body for methods), `new` instantiation, get attribute/method, set attribute
 
-**Block Connection Rules:** Statement blocks (those with top and bottom connection points) connect vertically to form sequences. Value blocks (those with side connection points) plug into input sockets on statement blocks. The visual connection indicators prevent invalid connections, enforcing Python's syntactic rules at the block level.
+### 12. Exceptions
+`try`/`except Exception as e` — named exception variable for inspection
 
-**Variable Management:** Use the Variables category to create, rename, and delete variables. Once variables are defined, variable getter and setter blocks become available in the toolbox. Variable blocks automatically update to reference the correct variable names.
+### 13. Advanced / Raw Code
+`raw code (value)` — inline any Python expression (dict literals, list comprehensions, lambdas)
+`raw code (stmt)` — inline any Python statement block (context managers, decorators, custom constructs)
 
-**Function Definition:** The Functions category (custom "PROCEDURE") provides blocks for defining functions with parameters and return values. Function definitions create callable blocks that appear in the toolbox, enabling modular program design.
+### 14. External Modules
+`import X`, `from X import Y`, `import X as Y`, call function with args (value or statement), `time.sleep()`, `random.randint()`
 
-### 3.4 Executing Python Code
-
-**Standard Execution:** Click the green "Run" button (▶) to execute the current workspace. The system performs these steps:
-
-1. Generates Python code from the block workspace using Blockly's Python generator
-2. Clears previous console output and resets the turtle canvas
-3. Transmits the code to the Pyodide Web Worker
-4. Displays stdout (print outputs) and stderr (error messages) in the Console Output tab
-5. For programs using turtle graphics, canvas updates appear in the Turtle Graphics tab
-6. When input() is encountered, a browser prompt dialog appears
-7. Upon completion or error, the Run button is re-enabled
-
-**Input Handling:** The `python_input` block creates a prompt dialog that captures user input as a string. Use the Type Casting block to convert input to integers or floats for numerical operations.
-
-**Execution Control:** The "Stop / Reset" button terminates any running program and reinitializes the Python environment. This is essential for interrupting infinite loops or long-running computations. The button also resets the turtle canvas to its default state.
-
-### 3.5 Working with Turtle Graphics
-
-The turtle graphics subsystem provides a Logo-like programming environment on an HTML canvas. Key operations include:
-
-- **Movement:** `turtle.forward(distance)` and `turtle.backward(distance)`
-- **Rotation:** `turtle.right(angle)` and `turtle.left(angle)` (angles in degrees)
-- **Position Control:** `turtle.goto(x, y)` (canvas coordinates with origin at center)
-- **Pen Control:** `turtle.penup()` (move without drawing) and `turtle.pendown()` (draw while moving)
-- **Appearance:** `turtle.color(color_name)`, `turtle.pensize(width)`, `turtle.fillcolor(color_name)`
-- **Drawing:** `turtle.circle(radius)`
-- **Filling:** `turtle.begin_fill()` and `turtle.end_fill()` enclose shapes for color filling
-- **Information:** `turtle.xcor()`, `turtle.ycor()`, `turtle.pos()`, `turtle.heading()`
-- **Output:** `turtle.write(text)` places text at turtle position
-- **Stamping:** `turtle.stamp()` leaves a turtle icon imprint
-
-**Turtle Coordinate System:** The canvas origin (0,0) is at the center. X increases rightward, Y increases upward. The turtle initially faces upward (90 degrees in standard orientation, but the implementation uses -90 degrees for the angle variable). The `setheading` block accepts standard compass bearings (0 = east, 90 = north, 180 = west, 270 = south).
-
-**Speed Control:** The `turtle.speed(value)` block accepts integers from 0 to 10. Speed 0 disables animation delays for instant execution; higher values produce slower, more observable movements.
-
-### 3.6 File Operations and Persistence
-
-**Saving Workspace (Save Blocks):** Clicking "Save Blocks (.json)" exports the complete block workspace state as a JSON file. This file contains all block configurations, variable definitions, and layout information. Saved workspaces can be reloaded later or shared with other users.
-
-**Loading Workspace (Load Blocks):** The "Load Blocks (.json)" button opens a file picker. Select a previously saved JSON workspace file to restore the exact block configuration. The system validates JSON format before loading.
-
-**Exporting Python Code:** The "Export Python (.py)" button generates a standard Python script file from the current blocks. This file is compatible with any Python 3 interpreter (including CPython, PyPy, and others). Note that the exported code assumes the availability of standard library modules; turtle graphics output requires an environment with actual turtle graphics support.
-
-**Auto-Save:** The workspace automatically saves to browser localStorage on every block modification. Refreshing the page restores the most recent workspace state without manual intervention. This feature prevents accidental data loss during browser crashes or accidental navigation.
-
-**Example Workspaces:** The example selector provides four pre-configured demonstrations:
-
-| Example | Description |
-|---------|-------------|
-| Hello World | Simple text printing demonstrating basic block usage |
-| Count to 10 | For-loop with variable usage and iteration |
-| Guess Number Game | Complete game with random number generation, input handling, conditional logic, and loop control |
-| Turtle Square | Turtle graphics demonstration drawing a square using iteration |
-
-### 3.7 Advanced Features
-
-**Raw Code Blocks:** For functionality not available through standard blocks, the "Advanced/Raw Code" category provides two escape mechanisms:
-
-- `raw code (value)`: Accepts any Python expression and treats it as a value. Useful for dictionary literals (`{'key': 'value'}`), list comprehensions, lambda expressions, or any value-generating code.
-
-- `raw code (stmt)`: Accepts any Python statement block. Useful for try-except constructs (though a dedicated try-except block exists), context managers (`with` statements), decorators, or any statement-level Python code.
-
-**External Modules:** The "External Modules" category provides blocks for importing Python modules and calling their functions. Supported modules include math, random, time, datetime, and json. Users can specify custom module names through text fields.
-
-**Type Casting:** Convert between data types using explicit casting blocks. The dropdown selector offers int(), float(), and str() conversions. This is particularly useful for converting input() strings to numbers.
-
-**Object-Oriented Programming:** The OOP category enables class definition with method bodies (via the statement input), object instantiation, attribute access, and attribute assignment. This provides a foundation for teaching encapsulation and object-oriented design.
-
-**Exception Handling:** The try-except block captures exceptions and assigns them to a named variable for inspection. The try body and except body are separate statement inputs, allowing complex error recovery logic.
-
-### 3.8 Troubleshooting Common Issues
-
-**Pyodide Not Loading:** The editor requires internet access to load Pyodide from the CDN. If the console shows "Loading Python environment..." indefinitely, check network connectivity and ensure no firewall blocks `cdn.jsdelivr.net`.
-
-**Input Prompt Not Appearing:** The `python_input` block uses the browser's native `prompt()` dialog. Pop-up blockers may interfere; configure the browser to allow pop-ups from the editor's domain.
-
-**Turtle Canvas Not Updating:** Ensure the Turtle Graphics tab is selected when running turtle programs. The editor auto-switches to the Turtle tab when `import turtle` is detected in the generated code. Verify that `turtle_import` block is present at the beginning of the program.
-
-**Workspace Not Saving:** localStorage has capacity limitations (approximately 5-10 MB depending on browser). Extremely complex workspaces may exceed this limit. Export critical workspaces as JSON files as backup.
-
-**Generated Code Syntax Errors:** While blocks guarantee syntactic correctness, semantic errors (type mismatches, undefined variables, incorrect function arguments) can still occur. Examine the generated Python code in the right panel and verify block configurations.
-
-**Performance Degradation:** Very large workspaces with hundreds of blocks may experience reduced responsiveness. Consider breaking complex programs into multiple workspaces or using functions to encapsulate repeated logic.
+Blocks ship with pre-filled module names: `math`, `random`, `time`, `datetime`, `json` — all editable via text fields.
 
 ---
 
-## Part Four: Technical Architecture
+## Supported Python Features
 
-### 4.1 Component Overview
+Everything the blocks can express, plus:
 
-The Python Block Editor comprises these major components:
-
-| Component | Technology | Purpose |
-|-----------|------------|---------|
-| Block Workspace | Google Blockly v11 | Visual programming interface, block rendering, drag-drop interaction |
-| Code Generation | Blockly Python Generator | Converts block structures to Python syntax |
-| Python Execution | Pyodide v0.24.1 (WebAssembly) | Runs Python in-browser, provides standard library |
-| Execution Isolation | Web Worker | Sandboxes Python execution, prevents UI blocking |
-| Turtle Graphics | HTML5 Canvas + JavaScript | Renders turtle graphics commands |
-| Syntax Highlighting | Highlight.js | Provides colored code display |
-| Build Tool | Vite | Development server, module bundling |
-
-### 3.9 Performance Considerations
-
-The Pyodide WebAssembly module requires approximately 6-8 MB of download bandwidth on first load. Subsequent loads leverage browser caching. For optimal performance, ensure sufficient memory (512 MB or more) as Pyodide maintains a complete Python interpreter in memory during execution.
-
-### 3.10 Extending the Editor
-
-Advanced users can extend the editor by:
-
-1. Adding new block definitions in `customBlocks.js` following Blockly's JSON or JavaScript definition patterns
-2. Implementing corresponding Python generators in `pythonGenerators.js` using the pythonGenerator.forBlock registry
-3. Adding new toolbox categories in `toolbox.js` following the categoryToolbox schema
-4. Extending `turtleGraphics.js` with additional turtle commands
-5. Modifying `workerScript.js` to expose additional Python modules or functionality
+- **All standard library modules available in Pyodide** (`math`, `random`, `time`, `datetime`, `json`, `os`, `sys`, `re`, `itertools`, `collections`, and many more)
+- **`await` bridging** — blocking calls like `time.sleep()` and turtle commands use `await` under the hood (auto-stripped in displayed/exported code so it's standard Python)
+- **`input()` as browser `prompt()`** — captured via async bridge
+- **Error output** — stderr appears in console with full Python traceback formatting
 
 ---
 
-## Part Five: Pedagogical Best Practices
+## Project Mode — Multi-file Workflow
 
-### 5.1 For Educators
+The **Project** system is a full virtual filesystem stored in IndexedDB:
 
-**Progressive Disclosure:** Introduce blocks gradually. Start with simple output (text_print), progress to variables, then conditionals, then loops, then data structures. Each new concept builds on prior knowledge.
+### File Management
+- **Create** `.py`, `.json`, or `.txt` files and nested folders
+- **Rename**, **delete**, **duplicate** files
+- **Download** individual files as raw content or as Blockly workspace JSON
+- **Import** `.json` files from disk
+- **Export** entire project as `.pyblocks-project.json` (re-importable) or `.zip`
 
-**Code Reading Exercises:** Use the real-time code generation feature to show how blocks translate to Python. Ask students to predict the generated code before observing it.
+### Multi-file Python Execution
+When you click **Run** in project mode, all `.py` files in the project are written into the Pyodide virtual filesystem before execution. This means files can `import` each other — build real multi-module Python projects.
 
-**Debugging with Console:** When programs misbehave, examine the console output and error messages. Use this as a teaching moment to explain Python's error messages and stack traces.
-
-**Pair Programming:** Two students working on a single workspace—one driving (manipulating blocks), one navigating (reading code and suggesting changes)—promotes collaboration and code review practices.
-
-**Project-Based Learning:** Assign projects that gradually increase in complexity: a simple calculator (arithmetic), a quiz game (conditionals, input), a drawing program (turtle, loops), a data analysis task (lists, dictionaries).
-
-### 5.2 For Self-Learners
-
-**Start with Examples:** Load each example, run it, then modify one aspect at a time to understand its effect. This experimental approach builds intuition faster than reading documentation.
-
-**Compare Block and Code Views:** Deliberately observe how each block type generates specific Python syntax. Build a mental mapping between visual patterns and textual patterns.
-
-**Challenge Progression:** Begin with the Hello World example, then add variables, then add user input, then add conditionals, then add loops, then combine concepts into games.
-
-**Portfolio Building:** Export completed workspaces as JSON files and Python scripts. Maintain a personal library of solutions to common problems.
+### File Explorer (Sidebar)
+- VSCode-style tree view with indentation
+- Folder expand/collapse with chevrons
+- Active file highlighting
+- Path breadcrumb bar
+- Selected folder tracking (new files/folders created inside the selected folder)
+- Action buttons appear on hover (download, duplicate, rename, delete)
 
 ---
 
-## Part Six: Limitations and Future Directions
+## Single-File Mode
 
-### 6.1 Current Limitations
-
-- **Network Dependency:** Initial Pyodide loading requires internet connectivity
-- **Module Support:** Only modules available in Pyodide's WebAssembly build are usable (standard library mostly available; binary extensions not supported)
-- **File System Access:** No persistent file I/O beyond localStorage and user-triggered exports/imports
-- **Concurrent Execution:** Single-threaded execution within Web Worker; no true parallelism
-- **Turtle Animation:** Speed-dependent delays may not precisely match CPython's turtle module behavior
-
-### 6.2 Potential Enhancements
-
-- Collaborative editing with WebSockets
-- Additional Python modules (NumPy, Matplotlib) via custom Pyodide builds
-- Persistent cloud workspace storage
-- User account system with assignment submission
-- Built-in tutorials and interactive lessons
-- Debugger integration (breakpoints, step execution)
+Quick-start mode for one-off scripts:
+- No project management overhead
+- Auto-saves workspace to `localStorage` on every block change
+- Load/save workspace as `.json` files
+- Export generated Python as `.py`
+- Example loader in the toolbar
 
 ---
 
-## Conclusion
+## Interface Layout
 
-The Python Block Editor represents a thoughtful convergence of visual programming accessibility and professional Python development capability. By eliminating syntax barriers while preserving semantic fidelity, it serves as an effective educational platform for programming novices and a productive prototyping environment for experienced developers. The comprehensive block set—spanning fundamental constructs, data structures, object-oriented programming, exception handling, and turtle graphics—supports a complete introductory programming curriculum. The real-time code generation bridges the gap between visual and text-based paradigms, facilitating a natural learning progression. Educators, self-learners, and professional developers alike will find value in this versatile tool.
+### Homepage (`#home`)
+- Two large cards: **Create Single File** and **Create Multi-file Project**
+- **Import Project** button to load a `.pyblocks-project.json`
+- **Recent Projects** list with quick-open and delete (from IndexedDB)
+
+### Editor View
+```
+┌─ Toolbar ──────────────────────────────────────────────────┐
+│ 🏠  [Title]  [Examples▼]  [▶Run] [🛑Stop] [🗑️Clear]      │
+├──────────┬──────────────────────┬───────────────────────────┤
+│ File     │  Blockly Workspace   │  Right Panel              │
+│ Explorer │  (drag blocks here)  │  ┌─ Python Code (hljs) ─┐ │
+│ (project │                      │  │                      │ │
+│  mode    │                      │  └──────────────────────┘ │
+│  only)   │                      │  ┌ Console │ Turtle ────┐ │
+│          │                      │  │ stdout / stderr      │ │
+│          │                      │  │ or turtle canvas     │ │
+│          │                      │  └──────────────────────┘ │
+└──────────┴──────────────────────┴───────────────────────────┘
+```
+
+---
+
+## How to Run
+
+### Prerequisites
+- A modern browser (Chrome, Firefox, Edge, Safari) with WebAssembly support
+- Internet connection for the first load (Pyodide ~6-8 MB, Blockly library from CDN)
+- After first load, the PWA service worker caches assets for offline use
+
+### Local Development
+```bash
+npm install
+npm run dev      # starts Vite dev server
+```
+
+### Production Build
+```bash
+npm run build    # outputs to dist/
+npm run preview  # preview the production build locally
+```
+
+### Deploy
+Serve the `dist/` directory (after `npm run build`) or the project root through any static file server. The `netlify.toml` config is included for one-click Netlify deployment.
+
+---
+
+## Technical Architecture
+
+| Component | Technology |
+|---|---|
+| Block Workspace | Google Blockly v11.1.1 |
+| Code Generation | Blockly Python Generator |
+| Python Runtime | Pyodide v0.24.1 (CPython on WebAssembly) |
+| Execution Isolation | Web Worker (sandboxed, non-blocking) |
+| Turtle Graphics | HTML5 Canvas 2D + JavaScript bridge |
+| Syntax Highlighting | Highlight.js 11.9 (atom-one-dark theme) |
+| Project Storage | IndexedDB (`pyblocks-fs` database) |
+| Single-file Storage | Browser localStorage |
+| ZIP Export | JSZip 3.10.1 |
+| Build Tool | Vite 5 |
+| PWA | Service Worker + Web App Manifest |
+
+### How Execution Works
+1. Blockly generates Python code from the workspace
+2. Code is posted to a **Web Worker** running Pyodide
+3. The Worker runs the Python code with monkey-patched `input()` (→ browser prompt) and a virtual `turtle` module (→ canvas drawing via message passing)
+4. `stdout` and `stderr` are streamed back and displayed in the Console Output panel
+5. Turtle commands are bridged as async calls to the main thread's Canvas 2D API
+
+### Turtle Graphics System
+The turtle module is implemented as:
+- A JavaScript API object (`turtleAPI`) on the main thread that draws on an HTML5 Canvas
+- A Python module shim injected into Pyodide that translates turtle calls into async messages
+- Speed control: `turtle.speed(0)` disables animation delay; speeds 1-10 map to decreasing delays
+
+---
+
+## File Structure
+
+```
+├── index.html                  # Entry point — imports Blockly, Pyodide, JSZip, Highlight.js
+├── package.json                # Vite + Blockly dependency
+├── vite.config.js              # Vite config
+├── netlify.toml                # Netlify deploy config
+├── public/                     # Static assets
+│   ├── icon-192.png / 512.png  # PWA icons
+│   ├── icon.svg
+│   ├── manifest.json           # PWA manifest
+│   ├── sw.js                   # Service Worker
+│   ├── robots.txt / sitemap.xml
+├── src/
+│   ├── main.js                 # App entry — routing, PWA, mode setup, event wiring
+│   ├── blocks/
+│   │   └── customBlocks.js     # All custom Blockly block definitions
+│   ├── config/
+│   │   ├── toolbox.js          # Toolbox category + block layout
+│   │   └── examples.js         # Built-in example workspaces (JSON)
+│   ├── core/
+│   │   ├── workspace.js        # Blockly init, code gen, save/load, auto-save
+│   │   └── filesystem.js       # IndexedDB-backed virtual filesystem (CRUD, import/export)
+│   ├── generators/
+│   │   └── pythonGenerators.js # Custom Blockly → Python code generators
+│   ├── pyodide/
+│   │   ├── runner.js           # Worker lifecycle, message dispatch, tab switching
+│   │   └── workerScript.js     # Web Worker inline script — Pyodide init, Python shims
+│   ├── turtle/
+│   │   └── turtleGraphics.js   # Canvas 2D turtle drawing implementation
+│   ├── ui/
+│   │   ├── homepage.js         # Landing page with cards, recent projects, import
+│   │   └── fileExplorer.js     # VSCode-style sidebar tree view
+│   └── styles/
+│       ├── main.css            # Editor layout, toolbar, right panel, responsive
+│       ├── homepage.css        # Homepage styling
+│       └── fileExplorer.css    # File explorer tree styling
+```
+
+---
+
+## Examples Included
+
+| Example | What It Shows |
+|---|---|
+| 👋 Hello World | Basic `print()` block |
+| 🔢 Count to 10 | `for` loop with variable printing |
+| 🎲 Guess Number Game | Random int, while loop, if/elif/else, `input()`, type casting |
+| 🐢 Turtle Square | Turtle import, `for` loop, forward + right to draw a square |
+
+---
+
+## Browser Support
+
+| Browser | Status |
+|---|---|
+| Chrome 90+ | ✅ Full support |
+| Firefox 90+ | ✅ Full support |
+| Edge 90+ | ✅ Full support |
+| Safari 15+ | ✅ Full support (WebAssembly required) |
+
+---
+
+## Extending the Editor
+
+1. **Add new blocks** — Define in `src/blocks/customBlocks.js` following Blockly's JSON API
+2. **Add code generators** — Register in `src/generators/pythonGenerators.js` via `pythonGenerator.forBlock`
+3. **Add toolbox categories** — Edit `src/config/toolbox.js`
+4. **Add turtle commands** — Extend `src/turtle/turtleGraphics.js` and the Python shim in `src/pyodide/workerScript.js`
+5. **Add examples** — Add entries to `src/config/examples.js` in Blockly workspace JSON format
+
+---
+
+## Limitations
+
+- **Network required for first load** — Pyodide loads from CDN (~6-8 MB). Subsequent loads use browser cache / PWA service worker.
+- **Standard library only** — Modules available are those in Pyodide's build. Binary extensions (C-extensions) are not supported.
+- **Single-threaded execution** — Code runs in one Web Worker; no true parallelism.
+- **No persistent filesystem I/O** — Files exist in IndexedDB (projects) or localStorage (single-file); no access to the host filesystem beyond explicit import/export.
+- **`await` in generated code** — The editor uses top-level `await` internally for async turtle/input/sleep. Displayed and exported code strips these so it's standard Python, but if you copy code from the console mid-execution you may see `await` prefixes.
+
+---
+
+## License
+
+See [LICENSE](LICENSE) for details.

@@ -36,6 +36,28 @@
   gap: 4px;
 }
 
+/* Path bar */
+.fe-path-bar {
+  padding: 3px 10px;
+  font-size: 10px;
+  color: #888;
+  background: #1e1e1e;
+  border-bottom: 1px solid #333;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.fe-path-bar:hover {
+  color: #ccc;
+}
+
+/* Selected folder */
+.fe-tree-item.fe-selected {
+  background: #094771;
+}
+
 /* Tree area */
 .file-explorer-tree {
   flex: 1;
@@ -188,7 +210,8 @@
 .file-explorer-actions {
   display: flex;
   gap: 6px;
-  padding: 8px 10px;
+  align-items: center;
+  padding: 6px 10px;
   border-top: 1px solid #3c3c3c;
   flex-shrink: 0;
 }
@@ -198,6 +221,7 @@
   text-align: center;
   font-size: 11px;
 }
+
 
 /* Dropdown */
 .fe-dropdown {

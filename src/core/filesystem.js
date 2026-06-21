@@ -50,6 +50,7 @@ function promisify(request) {
 
 /** Walk into a nested tree given a "/"‑delimited path. Returns {parent, key, node}. */
 function walkTree(tree, path) {
+  const isFolder = path.endsWith('/');
   const parts = path.split('/').filter(Boolean);
   if (parts.length === 0) return { parent: null, key: null, node: tree };
   let parent = tree;
@@ -60,12 +61,14 @@ function walkTree(tree, path) {
     }
     parent = folder.children;
   }
-  const key = parts[parts.length - 1];
+  const key = isFolder ? parts[parts.length - 1] + '/' : parts[parts.length - 1];
   return { parent, key, node: parent[key] || null };
 }
 
 /** Insert a node at path (creating intermediate folders if needed). */
 function setAtPath(tree, path, node) {
+  // Preserve trailing slash for folder keys: 'a/' → ['a',''] → we need 'a/' as key
+  const isFolder = path.endsWith('/');
   const parts = path.split('/').filter(Boolean);
   let current = tree;
   for (let i = 0; i < parts.length - 1; i++) {
@@ -75,11 +78,14 @@ function setAtPath(tree, path, node) {
     }
     current = current[folderKey].children;
   }
-  current[parts[parts.length - 1]] = node;
+  // Last part: append '/' if original path was a folder path
+  const lastKey = isFolder ? parts[parts.length - 1] + '/' : parts[parts.length - 1];
+  current[lastKey] = node;
 }
 
 /** Delete a node at path, and clean up empty parent folders. */
 function deleteAtPath(tree, path) {
+  const isFolder = path.endsWith('/');
   const parts = path.split('/').filter(Boolean);
   if (parts.length === 0) return;
   const stack = [{ parent: null, key: null, node: tree }];
@@ -91,7 +97,7 @@ function deleteAtPath(tree, path) {
     stack.push({ parent: current, key: folderKey, node: folder.children });
     current = folder.children;
   }
-  const key = parts[parts.length - 1];
+  const key = isFolder ? parts[parts.length - 1] + '/' : parts[parts.length - 1];
   delete current[key];
   // Cleanup: remove empty parent folders (bottom-up, skip root)
   for (let i = stack.length - 1; i > 0; i--) {
@@ -186,10 +192,29 @@ export async function createProject(name) {
   return project;
 }
 
-/** Get a single project by ID. */
+/** Walk tree and fix folder keys missing trailing slash (legacy bug). */
+function normalizeTree(tree) {
+  if (!tree || typeof tree !== 'object') return tree;
+  const fixed = {};
+  for (const [key, node] of Object.entries(tree)) {
+    if (node && node.type === 'folder') {
+      const fixedKey = key.endsWith('/') ? key : key + '/';
+      fixed[fixedKey] = { type: 'folder', children: normalizeTree(node.children || {}), _expanded: node._expanded };
+    } else if (node && node.type === 'file') {
+      fixed[key] = node; // file keys don't need trailing slash
+    }
+  }
+  return fixed;
+}
+
+/** Get a single project by ID. Automatically fixes legacy folder keys. */
 export async function getProject(id) {
   const db = await openDB();
-  return promisify(dbTx(db, 'readonly').get(id));
+  const project = await promisify(dbTx(db, 'readonly').get(id));
+  if (project && project.tree) {
+    project.tree = normalizeTree(project.tree);
+  }
+  return project;
 }
 
 /** List all projects (latest first). */
@@ -305,11 +330,9 @@ export async function renameEntry(projectId, oldPath, newPath) {
   return project;
 }
 
-/** Get the full tree of a project. */
+/** Get the full tree of a project (normalized). */
 export async function getTree(projectId) {
-  const db = await openDB();
-  const project = await promisify(dbTx(db, 'readonly').get(projectId));
-  if (!project) throw new Error('Project not found');
+  const project = await getProject(projectId);
   return project.tree;
 }
 
