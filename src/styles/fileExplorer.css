@@ -1,0 +1,284 @@
+/* ==================== File Explorer Sidebar ==================== */
+
+.file-explorer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #252526;
+  color: #cccccc;
+  font-size: 13px;
+  user-select: none;
+}
+
+/* Header */
+.file-explorer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #bbbbbb;
+  border-bottom: 1px solid #3c3c3c;
+  flex-shrink: 0;
+}
+
+.file-explorer-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-explorer-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* Tree area */
+.file-explorer-tree {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 4px 0;
+}
+
+.file-explorer-tree::-webkit-scrollbar {
+  width: 8px;
+}
+.file-explorer-tree::-webkit-scrollbar-thumb {
+  background: #424242;
+  border-radius: 4px;
+}
+.file-explorer-tree::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.file-explorer-empty {
+  padding: 20px 12px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+  font-size: 12px;
+}
+
+/* Tree items */
+.fe-tree-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px 4px 8px;
+  cursor: pointer;
+  transition: background 0.1s;
+  position: relative;
+  line-height: 1.6;
+}
+
+.fe-tree-item:hover {
+  background: #2a2d2e;
+}
+
+.fe-tree-item.fe-active {
+  background: #37373d;
+  color: #fff;
+}
+
+.fe-tree-item.fe-active .fe-name {
+  color: #fff;
+}
+
+/* Chevron */
+.fe-chevron {
+  font-size: 8px;
+  width: 14px;
+  text-align: center;
+  flex-shrink: 0;
+  color: #888;
+  transition: transform 0.15s;
+  display: inline-block;
+}
+
+.fe-chevron-open {
+  transform: rotate(90deg);
+}
+
+.fe-chevron-hidden {
+  visibility: hidden;
+}
+
+/* Icon */
+.fe-icon {
+  flex-shrink: 0;
+  font-size: 14px;
+}
+
+/* Name */
+.fe-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #d4d4d4;
+}
+
+/* Action buttons (visible on hover) */
+.fe-actions {
+  display: none;
+  gap: 1px;
+  flex-shrink: 0;
+}
+
+.fe-tree-item:hover .fe-actions {
+  display: flex;
+}
+
+.fe-action-btn {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 11px;
+  border-radius: 3px;
+  line-height: 1;
+  transition: color 0.1s, background 0.1s;
+}
+
+.fe-action-btn:hover {
+  color: #fff;
+  background: #444;
+}
+
+.fe-action-delete:hover {
+  color: #f44747;
+  background: rgba(244, 71, 71, 0.2);
+}
+
+/* Buttons */
+.fe-btn {
+  background: #0e639c;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: background 0.15s;
+}
+
+.fe-btn:hover {
+  background: #1177bb;
+}
+
+.fe-btn-icon {
+  background: transparent;
+  color: #ccc;
+  font-size: 14px;
+  padding: 2px 6px;
+}
+
+.fe-btn-icon:hover {
+  background: #3c3c3c;
+  color: #fff;
+}
+
+/* Bottom action bar */
+.file-explorer-actions {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px solid #3c3c3c;
+  flex-shrink: 0;
+}
+
+.file-explorer-actions .fe-btn {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+}
+
+/* Dropdown */
+.fe-dropdown {
+  position: relative;
+}
+
+.fe-dropdown-menu {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 100;
+  background: #383838;
+  border: 1px solid #555;
+  border-radius: 6px;
+  min-width: 180px;
+  padding: 4px 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.fe-dropdown-menu.fe-dropdown-open {
+  display: block;
+}
+
+.fe-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 7px 14px;
+  border: none;
+  background: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+  transition: background 0.1s;
+}
+
+.fe-dropdown-item:hover {
+  background: #094771;
+  color: #fff;
+}
+
+.fe-dropdown-divider {
+  height: 1px;
+  background: #555;
+  margin: 4px 8px;
+}
+
+/* File download popup */
+.fe-file-dl-popup {
+  background: #383838;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 4px 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  min-width: 160px;
+}
+
+.fe-file-dl-popup button {
+  display: block;
+  width: 100%;
+  padding: 7px 14px;
+  border: none;
+  background: none;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+  transition: background 0.1s;
+}
+
+.fe-file-dl-popup button:hover {
+  background: #094771;
+  color: #fff;
+}
+
+/* Error state */
+.file-explorer-error {
+  padding: 20px;
+  text-align: center;
+  color: #f44747;
+}

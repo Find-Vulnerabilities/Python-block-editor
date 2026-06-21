@@ -15,7 +15,7 @@
   <meta name="apple-mobile-web-app-title" content="PyBlocks">
   <link rel="apple-touch-icon" href="/icon-192.png">
 
-  <!-- Import Map - 告訴瀏覽器去哪裡找 Blockly -->
+  <!-- Import Map - tells browser where to find Blockly -->
   <script type="importmap">
     {
       "imports": {
@@ -24,69 +24,84 @@
       }
     }
   </script>
-  
+
+  <!-- JSZip for project ZIP export/import -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
   <link rel="stylesheet" href="src/styles/main.css">
-  
+  <link rel="stylesheet" href="src/styles/homepage.css">
+  <link rel="stylesheet" href="src/styles/fileExplorer.css">
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
-  
+
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 </head>
 <body>
-  <div id="toolbar">
-    <div class="title">Python Block Editor</div>
+  <!-- ==================== Homepage View ==================== -->
+  <div id="homepage-view" style="display:none;"></div>
 
-    <button id="btn-install-pwa" class="btn-install" style="display:none" title="Install this app to your desktop">
-      Install App
-    </button>
+  <!-- ==================== Editor View ==================== -->
+  <div id="editor-view" style="display:none; height: 100vh; display: flex; flex-direction: column;">
 
-    <select id="example-select" style="padding: 5px; border-radius: 4px; margin-right: 15px; font-weight: bold; cursor: pointer; background: #fff;">
-      <option value="">📁 Load Example...</option>
-      <option value="hello">👋 Hello World</option>
-      <option value="loop">🔢 Count to 10</option>
-      <option value="guess">🎲 Guess Number Game</option>
-      <option value="turtle">🐢 Turtle Square</option>
-    </select>
-    
-    <button id="btn-run" style="background: #2196F3;">▶ Run</button>
-    <button id="btn-stop" style="background: #ff9800;">🛑 Stop / Reset</button>
-    <button id="btn-clear-blocks" style="background: #f44336;">🗑️ Clear Blocks</button>
+    <!-- Toolbar -->
+    <div id="toolbar">
+      <button id="btn-back-home" class="btn-back" style="background: #555; margin-right: 8px;" title="Back to Home">🏠</button>
+      <div class="title" id="toolbar-title">Python Block Editor</div>
 
-    <span class="toolbar-sep"></span>
+      <button id="btn-install-pwa" class="btn-install" style="display:none" title="Install this app to your desktop">
+        Install App
+      </button>
 
-    <button id="btn-export-py" class="btn-download" style="background: #4CAF50;">⬇ Export .py</button>
-    <button id="btn-save-blocks" class="btn-download" style="background: #FF9800;">💾 Save .json</button>
-    <button id="btn-load-blocks" class="btn-download" style="background: #2196F3;">📂 Load .json</button>
-    
-    <input type="file" id="file-input" style="display: none;" accept=".json" />
-  </div>
+      <select id="example-select" style="padding: 5px; border-radius: 4px; margin-right: 15px; font-weight: bold; cursor: pointer; background: #fff;">
+        <option value="">📁 Load Example...</option>
+        <option value="hello">👋 Hello World</option>
+        <option value="loop">🔢 Count to 10</option>
+        <option value="guess">🎲 Guess Number Game</option>
+        <option value="turtle">🐢 Turtle Square</option>
+      </select>
 
-  <div id="editor-container">
-    <div id="blocklyDiv"></div>
-    <div id="right-panel">
-      <pre id="codeDivContainer"><code id="codeDiv" class="language-python"># Your Python code will appear here...</code></pre>
-      
-      <div id="output-tabs">
-        <div id="tab-console" class="output-tab active"> Console Output</div>
-        <div id="tab-turtle" class="output-tab"> Turtle Graphics</div>
-      </div>
+      <button id="btn-run" style="background: #2196F3;">▶ Run</button>
+      <button id="btn-stop" style="background: #ff9800;">🛑 Stop / Reset</button>
+      <button id="btn-clear-blocks" style="background: #f44336;">🗑️ Clear Blocks</button>
 
-      <div id="output-area">
-        <div id="canvas-container">
-          <canvas id="turtle-canvas" width="300" height="250"></canvas>
+      <input type="file" id="file-input" style="display: none;" accept=".json" />
+    </div>
+
+    <!-- Main editor area -->
+    <div id="editor-container">
+      <!-- File Explorer Sidebar (project mode only) -->
+      <div id="sidebar" style="display:none; width: 220px; min-width: 180px; height: 100%; overflow: hidden;"></div>
+
+      <!-- Blockly workspace -->
+      <div id="blocklyDiv"></div>
+
+      <!-- Right panel -->
+      <div id="right-panel">
+        <pre id="codeDivContainer"><code id="codeDiv" class="language-python"># Your Python code will appear here...</code></pre>
+
+        <div id="output-tabs">
+          <div id="tab-console" class="output-tab active"> Console Output</div>
+          <div id="tab-turtle" class="output-tab"> Turtle Graphics</div>
         </div>
-        <div id="console-container">
-          <div id="console-header">
-            Console Output
-            <button id="btn-clear-console" style="float: right; background: #555; color: white; border: none; cursor: pointer; border-radius: 3px; font-size: 11px; padding: 3px 8px;">Clear Console</button>
+
+        <div id="output-area">
+          <div id="canvas-container">
+            <canvas id="turtle-canvas" width="300" height="250"></canvas>
           </div>
-          <div id="console-output">Loading Python environment... (Requires internet)</div>
+          <div id="console-container">
+            <div id="console-header">
+              Console Output
+              <button id="btn-clear-console" style="float: right; background: #555; color: white; border: none; cursor: pointer; border-radius: 3px; font-size: 11px; padding: 3px 8px;">Clear Console</button>
+            </div>
+            <div id="console-output">Loading Python environment... (Requires internet)</div>
+          </div>
         </div>
       </div>
     </div>
   </div>
-  
+
   <script type="module" src="src/main.js"></script>
 </body>
 </html>
