@@ -85,6 +85,10 @@ export function runPythonCode(code) {
     return;
   }
 
+  // Transform 'def ' to 'async def ' so that await (used by turtle, input, time.sleep, etc.)
+  // is valid inside user-defined functions. Blockly's procedure blocks generate plain 'def'.
+  code = code.replace(/^(\s*)def /gm, '$1async def ');
+
   // Auto-switch tabs if turtle is imported
   if (code.includes('import turtle')) {
     const tabTurtle = document.getElementById('tab-turtle');
