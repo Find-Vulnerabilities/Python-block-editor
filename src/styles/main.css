@@ -7,6 +7,23 @@ html, body {
   overflow: hidden;
 }
 
+/* Drag-and-drop overlay */
+body.drag-over::after {
+  content: '📂 Drop JSON file to load blocks';
+  position: fixed;
+  inset: 0;
+  background: rgba(76, 175, 80, 0.85);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8em;
+  font-weight: 700;
+  z-index: 9999;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
 /* ==================== Toolbar ==================== */
 
 #toolbar {
@@ -21,32 +38,51 @@ html, body {
 }
 
 #toolbar button {
-  padding: 5px 12px;
+  padding: 6px 14px;
   cursor: pointer;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   background: #4CAF50;
   color: white;
   font-weight: 600;
   font-size: 12px;
   white-space: nowrap;
-  transition: background 0.15s, transform 0.1s;
+  transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+  letter-spacing: 0.2px;
 }
 
 #toolbar button:hover {
-  background: #45a049;
+  filter: brightness(1.12);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 #toolbar button:active {
-  transform: scale(0.97);
+  transform: scale(0.96);
 }
 
-/* Back to home button */
-.btn-back {
-  padding: 5px 10px !important;
-  font-size: 16px !important;
-  border-radius: 6px !important;
-  line-height: 1;
+/* Download button */
+.btn-download-main {
+  background: #4CAF50 !important;
+}
+
+/* Load button */
+.btn-load-main {
+  background: #7C4DFF !important;
+}
+
+/* Run button */
+.btn-run-main {
+  background: #2196F3 !important;
+}
+
+/* Stop button */
+.btn-stop-main {
+  background: #FF9800 !important;
+}
+
+/* Clear blocks button */
+.btn-clear-main {
+  background: #f44336 !important;
 }
 
 /* PWA Install button */
@@ -81,27 +117,57 @@ html, body {
 /* Toolbar separator */
 .toolbar-sep {
   width: 1px;
-  height: 28px;
-  background: #555;
-  margin: 0 2px;
+  height: 26px;
+  background: linear-gradient(to bottom, transparent, #666, transparent);
+  margin: 0 10px;
   flex-shrink: 0;
+  border-radius: 1px;
 }
 
-/* Download/save buttons — more prominent */
-.btn-download {
+/* Toolbar dropdown */
+.toolbar-dropdown {
   position: relative;
-  padding: 5px 12px !important;
+  display: inline-block;
+}
+
+.toolbar-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  background: #383838;
+  border: 1px solid #555;
+  border-radius: 6px;
+  min-width: 180px;
+  padding: 4px 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  z-index: 200;
+}
+
+.toolbar-dropdown-menu.toolbar-dropdown-open {
+  display: block;
+}
+
+.toolbar-dropdown-item {
+  display: block !important;
+  width: 100% !important;
+  padding: 8px 14px !important;
+  border: none !important;
+  background: none !important;
+  color: #ccc !important;
+  cursor: pointer !important;
   font-size: 12px !important;
-  letter-spacing: 0.3px;
-  border: 2px solid rgba(255,255,255,0.2) !important;
-  transition: transform 0.15s, box-shadow 0.15s !important;
+  font-weight: 600 !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  border-radius: 0 !important;
+  transition: background 0.1s !important;
 }
-.btn-download:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 3px 12px rgba(0,0,0,0.3);
-}
-.btn-download:active {
-  transform: translateY(0);
+
+.toolbar-dropdown-item:hover {
+  background: #094771 !important;
+  color: #fff !important;
 }
 
 #toolbar .title {
@@ -121,33 +187,12 @@ html, body {
   overflow: hidden;
 }
 
-/* Sidebar (file explorer — project mode) */
-#sidebar {
-  background: #252526;
-  border-right: 1px solid #3c3c3c;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-#sidebar.visible {
-  display: block !important;
-}
-
 /* Blockly workspace — fills remaining space */
 #blocklyDiv {
   flex: 1;
   height: 100%;
   min-width: 300px;
-}
-
-/* In single-file mode (no sidebar), BlocklyDiv fills available space */
-body.single-mode #blocklyDiv {
   border-right: 2px solid #ccc;
-}
-
-/* In project mode with sidebar */
-body.project-mode #blocklyDiv {
-  border-right: 2px solid #3c3c3c;
 }
 
 /* ==================== Right Panel ==================== */
@@ -259,12 +304,6 @@ body.project-mode #blocklyDiv {
 @media (max-width: 900px) {
   #editor-container {
     flex-direction: column;
-  }
-  #sidebar {
-    width: 100% !important;
-    max-height: 200px;
-    border-right: none;
-    border-bottom: 1px solid #3c3c3c;
   }
   #blocklyDiv {
     height: 50%;

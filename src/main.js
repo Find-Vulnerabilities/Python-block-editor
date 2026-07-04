@@ -1,20 +1,11 @@
 import {
-  initWorkspace, exportPython, saveBlocks, loadBlocks, clearWorkspace,
-  loadExample, runCurrentWorkspace, getWorkspaceState, loadWorkspaceState,
-  setSaveMode
+  initWorkspace, runCurrentWorkspace, loadBlocks, clearWorkspace,
+  loadExample, exportPython, saveBlocks
 } from './core/workspace.js';
-import { initPyodideWorker, setConsoleOutput, setRunButton, runPythonCode } from './pyodide/runner.js';
+import { initPyodideWorker, setConsoleOutput, setRunButton } from './pyodide/runner.js';
 import { turtleAPI } from './turtle/turtleGraphics.js';
-import {
-  createProject, getProject, readFile, writeFile, getAllFiles
-} from './core/filesystem.js';
-import { initHomepage } from './ui/homepage.js';
-import { initFileExplorer, refresh as refreshExplorer, setActiveFile } from './ui/fileExplorer.js';
 
 // ==================== State ====================
-let currentMode = null;
-let currentProjectId = null;
-let currentFilePath = null;
 let deferredPrompt = null;
 
 // ==================== PWA Setup ====================
@@ -43,253 +34,104 @@ window.addEventListener('DOMContentLoaded', () => {
   if (runBtn) setRunButton(runBtn);
   window.turtleAPI = turtleAPI;
 
-  handleRoute();
-  window.addEventListener('hashchange', handleRoute);
+  // Directly launch the single-file editor — no homepage, no routing
+  initEditor();
 });
 
-// ==================== Routing ====================
-function handleRoute() {
-  const hash = window.location.hash || '#home';
-  if (hash === '#home') showHomepage();
-  else if (hash === '#editor/single') showSingleFileEditor();
-  else if (hash.startsWith('#editor/project/')) {
-    showProjectEditor(hash.replace('#editor/project/', ''));
-  }
-}
-
-function navigate(route) { window.location.hash = route; }
-
-// ==================== Homepage ====================
-function showHomepage() {
-  currentMode = null;
-  document.getElementById('homepage-view').style.display = '';
-  document.getElementById('editor-view').style.display = 'none';
-  initHomepage(document.getElementById('homepage-view'), navigate);
-}
-
-// ==================== Single-File Editor ====================
-function showSingleFileEditor() {
-  currentMode = 'single';
-  currentProjectId = null;
-  currentFilePath = null;
-
-  document.getElementById('homepage-view').style.display = 'none';
-  document.getElementById('editor-view').style.display = 'flex';
-  document.getElementById('sidebar').style.display = 'none';
-  document.getElementById('toolbar-title').textContent = 'Python Block Editor';
-  document.getElementById('example-select').style.display = '';
-  document.body.className = 'single-mode';
-
-  setSaveMode('localStorage');
+// ==================== Editor Initialization ====================
+function initEditor() {
   initPyodideWorker();
   turtleAPI.reset();
   initWorkspace();
-  setupSingleFileListeners();
+  setupListeners();
 }
 
-function setupSingleFileListeners() {
+function setupListeners() {
   setupTabSwitcher();
   setupPWAInstall();
 
-  // File input (for loading .json)
-  const fileInput = document.getElementById('file-input');
-  if (fileInput) {
-    const ni = fileInput.cloneNode(true);
-    fileInput.parentNode.replaceChild(ni, fileInput);
-    ni.addEventListener('change', (e) => {
-      const f = e.target.files[0];
-      if (!f) return;
-      const r = new FileReader();
-      r.onload = (ev) => loadBlocks(ev.target.result);
-      r.readAsText(f);
-      ni.value = '';
-    });
-  }
+  // Download dropdown (Python / JSON)
+  setupDownloadDropdown();
 
-  document.getElementById('btn-back-home')?.addEventListener('click', () => navigate('#home'));
+  // Load JSON file — trigger hidden file input
+  document.getElementById('btn-load')?.addEventListener('click', () => {
+    document.getElementById('file-input')?.click();
+  });
+
+  // Run button
   document.getElementById('btn-run')?.addEventListener('click', () => runCurrentWorkspace());
+
+  // Stop / Reset button
+  document.getElementById('btn-stop')?.addEventListener('click', () => {
+    const co = document.getElementById('console-output');
+    if (co) co.textContent += '\n[ 🛑 Execution force-stopped by user ]\n';
+    initPyodideWorker();
+  });
+
+  // Clear console
   document.getElementById('btn-clear-console')?.addEventListener('click', () => {
-    const co = document.getElementById('console-output'); if (co) co.textContent = '';
-  });
-  document.getElementById('btn-clear-blocks')?.addEventListener('click', () => clearWorkspace());
-  document.getElementById('btn-stop')?.addEventListener('click', () => {
     const co = document.getElementById('console-output');
-    if (co) co.textContent += '\n[ 🛑 Execution force-stopped by user ]\n';
-    initPyodideWorker();
-  });
-
-  // Example select
-  const sel = document.getElementById('example-select');
-  if (sel) {
-    const ns = sel.cloneNode(true);
-    sel.parentNode.replaceChild(ns, sel);
-    ns.addEventListener('change', (e) => {
-      if (!e.target.value) return;
-      loadExample(e.target.value);
-      e.target.value = '';
-    });
-  }
-}
-
-// ==================== Project Editor ====================
-async function showProjectEditor(projectId) {
-  currentMode = 'project';
-
-  if (projectId === 'new') {
-    const name = prompt('Project name:', 'My Python Project');
-    if (!name) { navigate('#home'); return; }
-    try {
-      const p = await createProject(name);
-      window.location.hash = '#editor/project/' + p.id;
-      return;
-    } catch (err) {
-      alert('Error creating project: ' + err.message);
-      navigate('#home');
-      return;
-    }
-  }
-
-  currentProjectId = projectId;
-  const project = await getProject(projectId).catch(() => null);
-  if (!project) { alert('Project not found.'); navigate('#home'); return; }
-
-  document.getElementById('homepage-view').style.display = 'none';
-  document.getElementById('editor-view').style.display = 'flex';
-  document.getElementById('sidebar').style.display = 'block';
-  document.getElementById('toolbar-title').textContent = project.name;
-  document.getElementById('example-select').style.display = 'none';
-  document.body.className = 'project-mode';
-
-  // Auto-save to current file in IndexedDB
-  setSaveMode('filesystem', projectId, (_path, content) => {
-    if (currentFilePath && currentProjectId) {
-      writeFile(currentProjectId, currentFilePath, content).catch(console.error);
-    }
-  });
-
-  initPyodideWorker();
-  turtleAPI.reset();
-  initWorkspace();
-
-  // Init file explorer sidebar
-  initFileExplorer(
-    document.getElementById('sidebar'),
-    projectId,
-    // onFileOpen
-    async (path, content) => {
-      currentFilePath = path;
-      setActiveFile(path);
-      const ok = loadWorkspaceState(content);
-      if (!ok) {
-        const cd = document.getElementById('codeDiv');
-        if (cd) cd.textContent = content;
-      }
-      document.getElementById('toolbar-title').textContent = project.name + ' — ' + path;
-    },
-    () => {}
-  );
-
-  await refreshExplorer();
-  setupProjectListeners(projectId);
-
-  // Auto-open first file
-  const allFiles = await getAllFiles(projectId);
-  const firstFile = allFiles.find(f => f.path === 'main.py')
-    || allFiles.find(f => f.path.endsWith('.py'))
-    || allFiles.find(f => f.path.endsWith('.json'))
-    || allFiles[0];
-  if (firstFile) {
-    currentFilePath = firstFile.path;
-    setActiveFile(firstFile.path);
-    const ok = loadWorkspaceState(firstFile.content);
-    if (!ok) {
-      const cd = document.getElementById('codeDiv');
-      if (cd) cd.textContent = firstFile.content;
-    }
-    document.getElementById('toolbar-title').textContent = project.name + ' — ' + firstFile.path;
-  }
-}
-
-function setupProjectListeners(projectId) {
-  setupTabSwitcher();
-  setupPWAInstall();
-
-  document.getElementById('btn-back-home')?.addEventListener('click', () => navigate('#home'));
-
-  // Run
-  document.getElementById('btn-run')?.addEventListener('click', async () => {
-    const ws = window._blocklyWorkspace;
-    const pg = window._blocklyPython;
-    if (!ws || !pg) return;
-    const code = pg.workspaceToCode(ws);
-    const displayCode = code.replace(/^(\s*)await /gm, '$1');
-    const allFiles = await getAllFiles(projectId);
-    runProjectCode(displayCode, allFiles);
-  });
-
-  // Stop
-  document.getElementById('btn-stop')?.addEventListener('click', () => {
-    const co = document.getElementById('console-output');
-    if (co) co.textContent += '\n[ 🛑 Execution force-stopped by user ]\n';
-    initPyodideWorker();
+    if (co) co.textContent = '';
   });
 
   // Clear blocks
   document.getElementById('btn-clear-blocks')?.addEventListener('click', () => clearWorkspace());
 
-  // Clear console
-  document.getElementById('btn-clear-console')?.addEventListener('click', () => {
-    const co = document.getElementById('console-output'); if (co) co.textContent = '';
-  });
+  // Example select
+  const sel = document.getElementById('example-select');
+  if (sel) {
+    sel.addEventListener('change', (e) => {
+      if (!e.target.value) return;
+      loadExample(e.target.value);
+      e.target.value = '';
+    });
+  }
 
-  // Load .json into workspace
+  // File input (for loading .json workspace files)
   const fileInput = document.getElementById('file-input');
   if (fileInput) {
-    const ni = fileInput.cloneNode(true);
-    fileInput.parentNode.replaceChild(ni, fileInput);
-    ni.addEventListener('change', (e) => {
+    fileInput.addEventListener('change', (e) => {
       const f = e.target.files[0];
       if (!f) return;
       const r = new FileReader();
       r.onload = (ev) => loadBlocks(ev.target.result);
       r.readAsText(f);
-      ni.value = '';
+      fileInput.value = '';
     });
   }
+
+  // Drag and drop JSON files onto the page
+  setupDragAndDrop();
 }
 
-// ==================== Multi-file Python Execution ====================
-async function runProjectCode(mainCode, allFiles) {
-  const extraFiles = allFiles
-    .filter(f => f.path.endsWith('.py'))
-    .map(f => ({
-      path: f.path,
-      content: f.content.replace(/^(\s*)await /gm, '$1')
-    }));
+// ==================== Download Dropdown ====================
+function setupDownloadDropdown() {
+  const btn = document.getElementById('btn-download');
+  const menu = document.getElementById('dropdown-download-menu');
+  if (!btn || !menu) return;
 
-  let preamble = 'import sys, os\n';
-  const addedPaths = new Set();
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    menu.classList.toggle('toolbar-dropdown-open');
+  });
 
-  for (const f of extraFiles) {
-    if (currentFilePath && f.path === currentFilePath) continue;
-    const safePath = '/' + f.path;
-    const dir = f.path.includes('/') ? f.path.slice(0, f.path.lastIndexOf('/')) : '';
-    if (dir && !addedPaths.has(dir)) {
-      preamble += `os.makedirs('/${dir}', exist_ok=True)\n`;
-      addedPaths.add(dir);
-    }
-    preamble += `with open('${safePath}', 'w') as _f:\n    _f.write(${JSON.stringify(f.content)})\n`;
-    if (dir) preamble += `sys.path.insert(0, '/${dir}')\n`;
-  }
-  if (currentFilePath) {
-    preamble += `with open('/${currentFilePath}', 'w') as _f:\n    _f.write(${JSON.stringify(mainCode)})\n`;
-  }
-  preamble += "sys.path.insert(0, '/')\n";
+  menu.querySelectorAll('.toolbar-dropdown-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menu.classList.remove('toolbar-dropdown-open');
+      const fmt = item.dataset.fmt;
+      if (fmt === 'py') exportPython('script.py');
+      else if (fmt === 'json') saveBlocks();
+    });
+  });
 
-  runPythonCode(preamble + '\n' + mainCode);
+  // Close dropdown when clicking outside
+  document.addEventListener('click', () => {
+    menu.classList.remove('toolbar-dropdown-open');
+  });
 }
 
-// ==================== Shared Helpers ====================
+// ==================== Tab Switcher (Console / Turtle) ====================
 function setupTabSwitcher() {
   const tabConsole = document.getElementById('tab-console');
   const tabTurtle = document.getElementById('tab-turtle');
@@ -297,18 +139,16 @@ function setupTabSwitcher() {
   const cav = document.getElementById('canvas-container');
   if (!tabConsole || !tabTurtle) return;
 
-  const nc = tabConsole.cloneNode(true);
-  const nt = tabTurtle.cloneNode(true);
-  tabConsole.parentNode.replaceChild(nc, tabConsole);
-  tabTurtle.parentNode.replaceChild(nt, tabTurtle);
-
-  nc.addEventListener('click', () => {
-    nc.classList.add('active'); nt.classList.remove('active');
+  tabConsole.addEventListener('click', () => {
+    tabConsole.classList.add('active');
+    tabTurtle.classList.remove('active');
     if (cc) cc.style.display = 'flex';
     if (cav) cav.style.display = 'none';
   });
-  nt.addEventListener('click', () => {
-    nt.classList.add('active'); nc.classList.remove('active');
+
+  tabTurtle.addEventListener('click', () => {
+    tabTurtle.classList.add('active');
+    tabConsole.classList.remove('active');
     if (cav) cav.style.display = 'flex';
     if (cc) cc.style.display = 'none';
     const canvas = document.getElementById('turtle-canvas');
@@ -316,20 +156,65 @@ function setupTabSwitcher() {
       const tw = Math.floor(canvas.parentElement.clientWidth * 0.9);
       const th = Math.floor(canvas.parentElement.clientHeight * 0.9);
       if (canvas.width !== tw || canvas.height !== th) {
-        canvas.width = tw; canvas.height = th;
+        canvas.width = tw;
+        canvas.height = th;
         window.turtleAPI.reset();
       }
     }
   });
 }
 
+// ==================== Drag and Drop ====================
+function setupDragAndDrop() {
+  const dropTarget = document.body;
+
+  // Prevent default to allow drop
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+    dropTarget.addEventListener(evt, (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+  });
+
+  // Highlight on dragover
+  ['dragenter', 'dragover'].forEach(evt => {
+    dropTarget.addEventListener(evt, () => {
+      dropTarget.classList.add('drag-over');
+    });
+  });
+
+  ['dragleave', 'drop'].forEach(evt => {
+    dropTarget.addEventListener(evt, () => {
+      dropTarget.classList.remove('drag-over');
+    });
+  });
+
+  // Handle drop
+  dropTarget.addEventListener('drop', (e) => {
+    const files = e.dataTransfer?.files;
+    if (!files || files.length === 0) return;
+
+    // Filter for .json files only
+    const jsonFiles = Array.from(files).filter(f => f.name.endsWith('.json'));
+    if (jsonFiles.length === 0) {
+      alert('Only .json files are supported. Please drop a Blockly workspace JSON file.');
+      return;
+    }
+
+    // Load the first valid JSON file
+    const f = jsonFiles[0];
+    const reader = new FileReader();
+    reader.onload = (ev) => loadBlocks(ev.target.result);
+    reader.readAsText(f);
+  });
+}
+
+// ==================== PWA Install ====================
 function setupPWAInstall() {
   const btn = document.getElementById('btn-install-pwa');
   if (!btn) return;
-  const nb = btn.cloneNode(true);
-  btn.parentNode.replaceChild(nb, btn);
-  if (window.matchMedia('(display-mode: standalone)').matches) nb.style.display = 'none';
-  nb.addEventListener('click', async () => {
+  if (window.matchMedia('(display-mode: standalone)').matches) btn.style.display = 'none';
+  btn.addEventListener('click', async () => {
     if (!deferredPrompt) {
       alert('📲 Click the install icon in your browser address bar, or use "Add to Home Screen" in your browser menu.');
       return;
@@ -337,7 +222,7 @@ function setupPWAInstall() {
     deferredPrompt.prompt();
     await deferredPrompt.userChoice;
     deferredPrompt = null;
-    nb.style.display = 'none';
-    nb.classList.remove('pulse');
+    btn.style.display = 'none';
+    btn.classList.remove('pulse');
   });
 }

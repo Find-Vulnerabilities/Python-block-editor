@@ -10,21 +10,9 @@ import { examples } from '../config/examples.js';
 
 let workspace = null;
 
-// Save mode configuration
-let saveMode = 'localStorage'; // 'localStorage' | 'filesystem'
-let saveProjectId = null;
-let saveCallback = null; // (path, content) => void
-
 // Strip await for display/export (standard Python doesn't support top-level await)
 function stripAwait(code) {
   return code.replace(/^(\s*)await /gm, '$1');
-}
-
-/** Set the save mode for auto-save behavior. */
-export function setSaveMode(mode, projectId, callback) {
-  saveMode = mode;
-  saveProjectId = projectId || null;
-  saveCallback = callback || null;
 }
 
 /** Get the current workspace state as a JSON object. */
@@ -91,14 +79,12 @@ export function initWorkspace() {
     Blockly.svgResize(workspace);
   }, false);
 
-  // Load from LocalStorage on initialize only in localStorage mode
-  if (saveMode === 'localStorage') {
-    const savedState = localStorage.getItem('blocklyWorkspace');
-    if (savedState) {
-      try {
-        Blockly.serialization.workspaces.load(JSON.parse(savedState), workspace);
-      } catch (err) {}
-    }
+  // Load saved workspace from LocalStorage on initialize
+  const savedState = localStorage.getItem('blocklyWorkspace');
+  if (savedState) {
+    try {
+      Blockly.serialization.workspaces.load(JSON.parse(savedState), workspace);
+    } catch (err) {}
   }
 
   // Live update generated Python code — re-query codeDiv each time for robustness
@@ -119,17 +105,11 @@ export function initWorkspace() {
   workspace.addChangeListener(updateCode);
 
   workspace.addChangeListener((e) => {
-    // Auto-save logic on every block change (ignore UI events like clicking)
+    // Auto-save to localStorage on every block change (ignore UI events)
     if (e.isUiEvent) return;
 
     const state = Blockly.serialization.workspaces.save(workspace);
-    const stateJson = JSON.stringify(state);
-
-    if (saveMode === 'localStorage') {
-      localStorage.setItem('blocklyWorkspace', stateJson);
-    } else if (saveMode === 'filesystem' && saveCallback) {
-      saveCallback(null, stateJson);
-    }
+    localStorage.setItem('blocklyWorkspace', JSON.stringify(state));
   });
 
   // Trigger an initial code update so display is not blank
@@ -168,6 +148,7 @@ export function saveBlocks() {
 
 export function loadBlocks(jsonString) {
   if (!workspace) return;
+  if (!confirm('Load this file? This will replace your current blocks.')) return;
   try {
     const state = JSON.parse(jsonString);
     workspace.clear();

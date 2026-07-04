@@ -25,12 +25,7 @@
     }
   </script>
 
-  <!-- JSZip for project ZIP export/import -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-
   <link rel="stylesheet" href="src/styles/main.css">
-  <link rel="stylesheet" href="src/styles/homepage.css">
-  <link rel="stylesheet" href="src/styles/fileExplorer.css">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
@@ -39,15 +34,11 @@
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 </head>
 <body>
-  <!-- ==================== Homepage View ==================== -->
-  <div id="homepage-view" style="display:none;"></div>
-
   <!-- ==================== Editor View ==================== -->
-  <div id="editor-view" style="display:none; height: 100vh; display: flex; flex-direction: column;">
+  <div id="editor-view" style="height: 100vh; display: flex; flex-direction: column;">
 
     <!-- Toolbar -->
     <div id="toolbar">
-      <button id="btn-back-home" class="btn-back" style="background: #555; margin-right: 8px;" title="Back to Home">🏠</button>
       <div class="title" id="toolbar-title">Python Block Editor</div>
 
       <button id="btn-install-pwa" class="btn-install" style="display:none" title="Install this app to your desktop">
@@ -62,18 +53,27 @@
         <option value="turtle">🐢 Turtle Square</option>
       </select>
 
-      <button id="btn-run" style="background: #2196F3;">▶ Run</button>
-      <button id="btn-stop" style="background: #ff9800;">🛑 Stop / Reset</button>
-      <button id="btn-clear-blocks" style="background: #f44336;">🗑️ Clear Blocks</button>
+      <div class="toolbar-dropdown" id="dropdown-download">
+        <button id="btn-download" class="btn-download-main" title="Download">⬇ Download</button>
+        <div class="toolbar-dropdown-menu" id="dropdown-download-menu">
+          <button class="toolbar-dropdown-item" data-fmt="py">🐍 Python (.py)</button>
+          <button class="toolbar-dropdown-item" data-fmt="json">📋 Blockly JSON (.json)</button>
+        </div>
+      </div>
+
+      <button id="btn-load" class="btn-load-main" title="Load blocks from JSON file">📂 Load</button>
+
+      <div class="toolbar-sep"></div>
+
+      <button id="btn-run" class="btn-run-main">▶ Run</button>
+      <button id="btn-stop" class="btn-stop-main">🛑 Stop / Reset</button>
+      <button id="btn-clear-blocks" class="btn-clear-main">🗑️ Clear Blocks</button>
 
       <input type="file" id="file-input" style="display: none;" accept=".json" />
     </div>
 
     <!-- Main editor area -->
     <div id="editor-container">
-      <!-- File Explorer Sidebar (project mode only) -->
-      <div id="sidebar" style="display:none; width: 220px; min-width: 180px; height: 100%; overflow: hidden;"></div>
-
       <!-- Blockly workspace -->
       <div id="blocklyDiv"></div>
 
