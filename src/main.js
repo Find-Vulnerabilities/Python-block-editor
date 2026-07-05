@@ -5,10 +5,9 @@ import {
 import { initPyodideWorker, setConsoleOutput, setRunButton } from './pyodide/runner.js';
 import { turtleAPI } from './turtle/turtleGraphics.js';
 
-// ==================== State ====================
 let deferredPrompt = null;
 
-// ==================== PWA Setup ====================
+// PWA install prompt
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredPrompt = e;
@@ -26,58 +25,44 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// ==================== Bootstrap ====================
 window.addEventListener('DOMContentLoaded', () => {
   const consoleOutput = document.getElementById('console-output');
   const runBtn = document.getElementById('btn-run');
   if (consoleOutput) setConsoleOutput(consoleOutput);
   if (runBtn) setRunButton(runBtn);
   window.turtleAPI = turtleAPI;
-
-  // Directly launch the single-file editor — no homepage, no routing
   initEditor();
 });
 
-// ==================== Editor Initialization ====================
 function initEditor() {
   initPyodideWorker();
   turtleAPI.reset();
   initWorkspace();
-  setupListeners();
-}
 
-function setupListeners() {
+  // --- wire up all the UI buttons ---
   setupTabSwitcher();
   setupPWAInstall();
-
-  // Download dropdown (Python / JSON)
   setupDownloadDropdown();
 
-  // Load JSON file — trigger hidden file input
   document.getElementById('btn-load')?.addEventListener('click', () => {
     document.getElementById('file-input')?.click();
   });
 
-  // Run button
   document.getElementById('btn-run')?.addEventListener('click', () => runCurrentWorkspace());
 
-  // Stop / Reset button
   document.getElementById('btn-stop')?.addEventListener('click', () => {
     const co = document.getElementById('console-output');
     if (co) co.textContent += '\n[ 🛑 Execution force-stopped by user ]\n';
     initPyodideWorker();
   });
 
-  // Clear console
   document.getElementById('btn-clear-console')?.addEventListener('click', () => {
     const co = document.getElementById('console-output');
     if (co) co.textContent = '';
   });
 
-  // Clear blocks
   document.getElementById('btn-clear-blocks')?.addEventListener('click', () => clearWorkspace());
 
-  // Example select
   const sel = document.getElementById('example-select');
   if (sel) {
     sel.addEventListener('change', (e) => {
@@ -87,7 +72,6 @@ function setupListeners() {
     });
   }
 
-  // File input (for loading .json workspace files)
   const fileInput = document.getElementById('file-input');
   if (fileInput) {
     fileInput.addEventListener('change', (e) => {
@@ -100,11 +84,9 @@ function setupListeners() {
     });
   }
 
-  // Drag and drop JSON files onto the page
   setupDragAndDrop();
 }
 
-// ==================== Download Dropdown ====================
 function setupDownloadDropdown() {
   const btn = document.getElementById('btn-download');
   const menu = document.getElementById('dropdown-download-menu');
@@ -125,13 +107,11 @@ function setupDownloadDropdown() {
     });
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener('click', () => {
     menu.classList.remove('toolbar-dropdown-open');
   });
 }
 
-// ==================== Tab Switcher (Console / Turtle) ====================
 function setupTabSwitcher() {
   const tabConsole = document.getElementById('tab-console');
   const tabTurtle = document.getElementById('tab-turtle');
@@ -164,11 +144,9 @@ function setupTabSwitcher() {
   });
 }
 
-// ==================== Drag and Drop ====================
 function setupDragAndDrop() {
   const dropTarget = document.body;
 
-  // Prevent default to allow drop
   ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
     dropTarget.addEventListener(evt, (e) => {
       e.preventDefault();
@@ -176,32 +154,24 @@ function setupDragAndDrop() {
     });
   });
 
-  // Highlight on dragover
   ['dragenter', 'dragover'].forEach(evt => {
-    dropTarget.addEventListener(evt, () => {
-      dropTarget.classList.add('drag-over');
-    });
+    dropTarget.addEventListener(evt, () => dropTarget.classList.add('drag-over'));
   });
 
   ['dragleave', 'drop'].forEach(evt => {
-    dropTarget.addEventListener(evt, () => {
-      dropTarget.classList.remove('drag-over');
-    });
+    dropTarget.addEventListener(evt, () => dropTarget.classList.remove('drag-over'));
   });
 
-  // Handle drop
   dropTarget.addEventListener('drop', (e) => {
     const files = e.dataTransfer?.files;
     if (!files || files.length === 0) return;
 
-    // Filter for .json files only
     const jsonFiles = Array.from(files).filter(f => f.name.endsWith('.json'));
     if (jsonFiles.length === 0) {
       alert('Only .json files are supported. Please drop a Blockly workspace JSON file.');
       return;
     }
 
-    // Load the first valid JSON file
     const f = jsonFiles[0];
     const reader = new FileReader();
     reader.onload = (ev) => loadBlocks(ev.target.result);
@@ -209,7 +179,6 @@ function setupDragAndDrop() {
   });
 }
 
-// ==================== PWA Install ====================
 function setupPWAInstall() {
   const btn = document.getElementById('btn-install-pwa');
   if (!btn) return;

@@ -10,39 +10,28 @@ import { examples } from '../config/examples.js';
 
 let workspace = null;
 
-// Strip await for display/export (standard Python doesn't support top-level await)
 function stripAwait(code) {
+  // generated code uses top-level await for turtle/input, but we want
+  // the displayed/exported code to be standard Python
   return code.replace(/^(\s*)await /gm, '$1');
 }
 
-/** Get the current workspace state as a JSON object. */
 export function getWorkspaceState() {
   if (!workspace) return null;
   return Blockly.serialization.workspaces.save(workspace);
 }
 
-/**
- * Load workspace from a JSON state object or JSON string.
- * Returns true if the state was valid Blockly JSON and loaded successfully.
- * Returns false if the content was not valid Blockly JSON (e.g. plain Python text).
- * In both cases, the workspace is cleared first.
- */
 export function loadWorkspaceState(state) {
   if (!workspace) return false;
-
-  // Always clear first so we don't leave stale blocks
   workspace.clear();
 
-  // Try to parse as JSON (Blockly workspace format)
   let parsed;
   try {
     parsed = typeof state === 'string' ? JSON.parse(state) : state;
   } catch (e) {
-    // Not valid JSON — probably plain Python text
     return false;
   }
 
-  // Check if it looks like a Blockly workspace state
   if (parsed && (parsed.blocks || parsed.blockLanguageVersion !== undefined)) {
     try {
       Blockly.serialization.workspaces.load(parsed, workspace);
@@ -57,29 +46,23 @@ export function loadWorkspaceState(state) {
 }
 
 export function initWorkspace() {
-  // Set language to English
   Blockly.setLocale(En);
-
-  // Define our custom blocks & generators
   defineCustomBlocks();
   definePythonGenerators();
 
-  // Inject Blockly Workspace
   workspace = Blockly.inject('blocklyDiv', {
     toolbox: toolbox,
     grid: { spacing: 20, length: 3, colour: '#ccc', snap: true }
   });
 
-  // Expose workspace and generator globally for external access
   window._blocklyWorkspace = workspace;
   window._blocklyPython = pythonGenerator;
 
-  // Ensure Blockly resizes correctly when the browser window is resized
   window.addEventListener('resize', () => {
     Blockly.svgResize(workspace);
   }, false);
 
-  // Load saved workspace from LocalStorage on initialize
+  // restore previous session from localStorage
   const savedState = localStorage.getItem('blocklyWorkspace');
   if (savedState) {
     try {
@@ -87,14 +70,12 @@ export function initWorkspace() {
     } catch (err) {}
   }
 
-  // Live update generated Python code — re-query codeDiv each time for robustness
   function updateCode() {
     const codeDiv = document.getElementById('codeDiv');
     if (!codeDiv) return;
     try {
       const code = pythonGenerator.workspaceToCode(workspace);
       codeDiv.textContent = stripAwait(code) || '# Your Python code will appear here...';
-      // Syntax highlighting
       delete codeDiv.dataset.highlighted;
       if (window.hljs) hljs.highlightElement(codeDiv);
     } catch (err) {
@@ -105,14 +86,11 @@ export function initWorkspace() {
   workspace.addChangeListener(updateCode);
 
   workspace.addChangeListener((e) => {
-    // Auto-save to localStorage on every block change (ignore UI events)
     if (e.isUiEvent) return;
-
     const state = Blockly.serialization.workspaces.save(workspace);
     localStorage.setItem('blocklyWorkspace', JSON.stringify(state));
   });
 
-  // Trigger an initial code update so display is not blank
   setTimeout(() => updateCode(), 100);
 
   return workspace;

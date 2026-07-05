@@ -12,7 +12,7 @@ export const turtleAPI = {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.x = canvas.width / 2;
     this.y = canvas.height / 2;
-    this.angle = -90; // Default pointing UP
+    this.angle = -90;
     this.penDown = true;
     this.fillpath = null;
     this.fillcol = "black";
@@ -62,10 +62,15 @@ export const turtleAPI = {
   backward: function(d) { this.forward(-d); },
   right: function(a) { this.angle += a; },
   left: function(a) { this.angle -= a; },
-  setheading: function(a) { this.angle = -a; },
-  heading: function() { let h = -this.angle; while(h < 0) h+= 360; return h % 360; },
+  setheading: function(a) { this.angle = -90 + a; },
+  heading: function() {
+    let h = (-this.angle) % 360;
+    if (h < 0) h += 360;
+    return h;
+  },
   penup: function() { this.penDown = false; },
   pendown: function() { this.penDown = true; },
+  isdown: function() { return this.penDown; },
   color: function(c) {
     const canvas = document.getElementById('turtle-canvas');
     if(canvas) {
@@ -76,6 +81,13 @@ export const turtleAPI = {
       ctx.fillStyle = c;
       ctx.beginPath();
       ctx.moveTo(this.x, this.y);
+    }
+  },
+  pencolor: function(c) {
+    const canvas = document.getElementById('turtle-canvas');
+    if(canvas) {
+      this.pencol = c;
+      canvas.getContext('2d').strokeStyle = c;
     }
   },
   fillcolor: function(c) {
@@ -123,11 +135,11 @@ export const turtleAPI = {
     const ctx = canvas.getContext('2d');
     ctx.save();
     ctx.translate(this.x, this.y);
-    ctx.rotate(this.angle * Math.PI / 180 + Math.PI/2); 
+    ctx.rotate(this.angle * Math.PI / 180 + Math.PI/2);
     ctx.font = "20px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("🐢", 0, 0); 
+    ctx.fillText("🐢", 0, 0);
     ctx.restore();
   },
   pensize: function(s) {
@@ -171,8 +183,7 @@ export const turtleAPI = {
   clear: function() {
     const canvas = document.getElementById('turtle-canvas');
     if(!canvas) return;
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   },
   pos: function() {
     const canvas = document.getElementById('turtle-canvas');
@@ -180,5 +191,16 @@ export const turtleAPI = {
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
     return [Math.round(this.x - cx), Math.round(cy - this.y)];
+  },
+  dot: function(size) {
+    const canvas = document.getElementById('turtle-canvas');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.save();
+    ctx.fillStyle = this.pencol;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, (size || 5) / 2, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.restore();
   }
 };

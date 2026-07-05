@@ -7,7 +7,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Drag-and-drop overlay */
+/* drag-and-drop overlay */
 body.drag-over::after {
   content: '📂 Drop JSON file to load blocks';
   position: fixed;
@@ -24,8 +24,7 @@ body.drag-over::after {
   backdrop-filter: blur(4px);
 }
 
-/* ==================== Toolbar ==================== */
-
+/* ---- toolbar ---- */
 #toolbar {
   padding: 8px 12px;
   background: #333;
@@ -60,32 +59,29 @@ body.drag-over::after {
   transform: scale(0.96);
 }
 
-/* Download button */
+/* download btn */
 .btn-download-main {
   background: #4CAF50 !important;
 }
 
-/* Load button */
+/* load btn */
 .btn-load-main {
   background: #7C4DFF !important;
 }
 
-/* Run button */
 .btn-run-main {
   background: #2196F3 !important;
 }
 
-/* Stop button */
 .btn-stop-main {
   background: #FF9800 !important;
 }
 
-/* Clear blocks button */
 .btn-clear-main {
   background: #f44336 !important;
 }
 
-/* PWA Install button */
+/* PWA install */
 .btn-install {
   background: linear-gradient(135deg, #7C4DFF, #E040FB) !important;
   padding: 6px 14px !important;
@@ -114,7 +110,6 @@ body.drag-over::after {
   50% { transform: scale(1.08); }
 }
 
-/* Toolbar separator */
 .toolbar-sep {
   width: 1px;
   height: 26px;
@@ -124,7 +119,6 @@ body.drag-over::after {
   border-radius: 1px;
 }
 
-/* Toolbar dropdown */
 .toolbar-dropdown {
   position: relative;
   display: inline-block;
@@ -179,15 +173,12 @@ body.drag-over::after {
   white-space: nowrap;
 }
 
-/* ==================== Editor Container ==================== */
-
 #editor-container {
   display: flex;
   flex: 1;
   overflow: hidden;
 }
 
-/* Blockly workspace — fills remaining space */
 #blocklyDiv {
   flex: 1;
   height: 100%;
@@ -195,8 +186,7 @@ body.drag-over::after {
   border-right: 2px solid #ccc;
 }
 
-/* ==================== Right Panel ==================== */
-
+/* ---- right panel ---- */
 #right-panel {
   width: 40%;
   min-width: 320px;
@@ -298,8 +288,6 @@ body.drag-over::after {
   font-family: 'Cascadia Code', 'Fira Code', 'Courier New', Courier, monospace;
   font-size: 13px;
 }
-
-/* ==================== Responsive ==================== */
 
 @media (max-width: 900px) {
   #editor-container {

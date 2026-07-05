@@ -1,8 +1,8 @@
 import * as Blockly from 'blockly';
 
 export function defineCustomBlocks() {
-// Main Custom Blocks
 
+// -- module imports --
 Blockly.Blocks['import_module'] = {
   init: function() {
     this.appendDummyInput()
@@ -176,7 +176,7 @@ Blockly.Blocks['list_append'] = {
   }
 };
 
-// Tuple blocks (simple two-item tuple, indexing and length)
+// -- tuple blocks --
 Blockly.Blocks['tuple_create'] = {
   init: function() {
     this.appendDummyInput().appendField("tuple (");
@@ -328,7 +328,7 @@ Blockly.Blocks['python_input'] = {
 };
 
 
-// Turtle Custom Blocks
+// -- turtle --
 Blockly.Blocks['turtle_clear'] = {
   init: function() {
     this.appendDummyInput().appendField("turtle.clear()");

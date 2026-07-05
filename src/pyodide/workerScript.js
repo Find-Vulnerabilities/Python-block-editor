@@ -4,7 +4,7 @@ importScripts("https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js");
 let pyodide = null;
 let resolveInput = null;
 let resolveTurtle = null;
-let turtleSpeedDelay = 15; // default wait 15ms
+let turtleSpeedDelay = 15;
 
 self.onmessage = async function(e) {
   const data = e.data;
@@ -27,7 +27,9 @@ async def async_sleep(secs):
     await asyncio.sleep(secs)
 time.sleep = async_sleep
 
+# build a fake turtle module that bridges to the canvas
 turtle_mod = ModuleType("turtle")
+
 async def _forward(d): await js.request_turtle('forward', d)
 async def _backward(d): await js.request_turtle('backward', d)
 async def _right(a): await js.request_turtle('right', a)
@@ -57,19 +59,25 @@ turtle_mod.forward = _forward
 turtle_mod.fd = _forward
 turtle_mod.backward = _backward
 turtle_mod.bk = _backward
+turtle_mod.back = _backward
 turtle_mod.right = _right
 turtle_mod.rt = _right
 turtle_mod.left = _left
 turtle_mod.lt = _left
 turtle_mod.penup = _penup
 turtle_mod.pu = _penup
+turtle_mod.up = _penup
 turtle_mod.pendown = _pendown
 turtle_mod.pd = _pendown
+turtle_mod.down = _pendown
 turtle_mod.reset = _reset
 turtle_mod.home = _home
 turtle_mod.color = _color
 turtle_mod.pensize = _pensize
+turtle_mod.width = _pensize
 turtle_mod.goto = _goto
+turtle_mod.setpos = _goto
+turtle_mod.setposition = _goto
 turtle_mod.circle = _circle
 turtle_mod.clear = _clear
 turtle_mod.pos = _pos
@@ -85,6 +93,7 @@ turtle_mod.stamp = _stamp
 turtle_mod.setheading = _setheading
 turtle_mod.seth = _setheading
 turtle_mod.heading = _heading
+
 sys.modules["turtle"] = turtle_mod
       \`);
       pyodide.setStdout({ batched: (str) => postMessage({ type: 'stdout', text: str }) });
@@ -131,7 +140,7 @@ self.request_turtle = function(cmd, arg) {
   if (cmd === 'speed') {
     let s = Number(arg) || 5;
     if (s === 0) turtleSpeedDelay = 0;
-    else turtleSpeedDelay = Math.max(5, 220 - (s * 20)); // speed 1 → 200ms, speed 10 → 20ms
+    else turtleSpeedDelay = Math.max(5, 220 - (s * 20));
     return Promise.resolve();
   }
   return new Promise((resolve) => {

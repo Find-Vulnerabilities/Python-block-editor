@@ -2,6 +2,7 @@ import { pythonGenerator } from 'blockly/python';
 
 export function definePythonGenerators() {
 
+// -- imports & modules --
 pythonGenerator.forBlock['import_module'] = function(block) {
   const moduleName = block.getFieldValue('MODULE_NAME');
   return 'import ' + moduleName + '\n';
@@ -22,32 +23,15 @@ pythonGenerator.forBlock['import_as'] = function(block) {
 pythonGenerator.forBlock['call_module_function_args'] = function(block, generator) {
   const funcName = block.getFieldValue('FUNC_NAME');
   let args = generator.valueToCode(block, 'ARGS', generator.ORDER_NONE) || '';
-  
-  if (args.startsWith('[') && args.endsWith(']')) {
-    args = args.slice(1, -1);
-  }
-  
-  const code = `${funcName}(${args})`;
-  return [code, generator.ORDER_FUNCTION_CALL];
+  if (args.startsWith('[') && args.endsWith(']')) args = args.slice(1, -1);
+  return [`${funcName}(${args})`, generator.ORDER_FUNCTION_CALL];
 };
 
 pythonGenerator.forBlock['call_module_function_args_stmt'] = function(block, generator) {
   const funcName = block.getFieldValue('FUNC_NAME');
   let args = generator.valueToCode(block, 'ARGS', generator.ORDER_NONE) || '';
-  
-  if (args.startsWith('[') && args.endsWith(']')) {
-    args = args.slice(1, -1);
-  }
-  
+  if (args.startsWith('[') && args.endsWith(']')) args = args.slice(1, -1);
   return `${funcName}(${args})\n`;
-};
-
-pythonGenerator.forBlock['raw_python'] = function(block, generator) {
-  return [block.getFieldValue('CODE'), generator.ORDER_ATOMIC];
-};
-
-pythonGenerator.forBlock['raw_python_stmt'] = function(block, generator) {
-  return block.getFieldValue('CODE') + '\n';
 };
 
 pythonGenerator.forBlock['time_sleep'] = function(block, generator) {
@@ -63,6 +47,16 @@ pythonGenerator.forBlock['random_randint'] = function(block, generator) {
   return [`random.randint(${min}, ${max})`, generator.ORDER_FUNCTION_CALL];
 };
 
+// -- raw python escape hatches --
+pythonGenerator.forBlock['raw_python'] = function(block, generator) {
+  return [block.getFieldValue('CODE'), generator.ORDER_ATOMIC];
+};
+
+pythonGenerator.forBlock['raw_python_stmt'] = function(block, generator) {
+  return block.getFieldValue('CODE') + '\n';
+};
+
+// -- dicts --
 pythonGenerator.forBlock['dict_create_empty'] = function(block, generator) {
   return ['{}', generator.ORDER_ATOMIC];
 };
@@ -91,12 +85,14 @@ pythonGenerator.forBlock['dict_keys'] = function(block, generator) {
   return [`list(${dict}.keys())`, generator.ORDER_FUNCTION_CALL];
 };
 
+// -- lists --
 pythonGenerator.forBlock['list_append'] = function(block, generator) {
   const list = generator.valueToCode(block, 'LIST', generator.ORDER_MEMBER) || '[]';
   const item = generator.valueToCode(block, 'ITEM', generator.ORDER_NONE) || 'None';
   return `${list}.append(${item})\n`;
 };
 
+// -- tuples --
 pythonGenerator.forBlock['tuple_create'] = function(block, generator) {
   const a = generator.valueToCode(block, 'A', generator.ORDER_NONE) || 'None';
   const b = generator.valueToCode(block, 'B', generator.ORDER_NONE) || 'None';
@@ -116,7 +112,7 @@ pythonGenerator.forBlock['tuple_len'] = function(block, generator) {
 
 pythonGenerator.forBlock['tuple_slice'] = function(block, generator) {
   const tup = generator.valueToCode(block, 'TUPLE', generator.ORDER_MEMBER) || '()';
-  const start = generator.valueToCode(block, 'START', generator.ORDER_NONE) || '';
+  const start = generator.valueToCode(block, 'START', generator.ORDER_NONE) || '0';
   const end = generator.valueToCode(block, 'END', generator.ORDER_NONE) || '';
   return [`${tup}[${start}:${end}]`, generator.ORDER_MEMBER];
 };
@@ -139,6 +135,7 @@ pythonGenerator.forBlock['tuple_unpack'] = function(block, generator) {
   return `${vars} = ${tup}\n`;
 };
 
+// -- OOP --
 pythonGenerator.forBlock['class_def'] = function(block, generator) {
   const className = block.getFieldValue('CLASS_NAME');
   const body = generator.statementToCode(block, 'BODY') || '  pass\n';
@@ -163,6 +160,7 @@ pythonGenerator.forBlock['object_attr_set'] = function(block, generator) {
   return `${obj}.${attr} = ${val}\n`;
 };
 
+// -- misc --
 pythonGenerator.forBlock['try_except_var'] = function(block, generator) {
   const tryBlock = generator.statementToCode(block, 'TRY') || '  pass\n';
   const exceptBlock = generator.statementToCode(block, 'EXCEPT') || '  pass\n';
@@ -181,23 +179,9 @@ pythonGenerator.forBlock['python_input'] = function(block, generator) {
   return [`await input(${promptText})`, generator.ORDER_FUNCTION_CALL];
 };
 
-// Turtle Generators
-pythonGenerator.forBlock['turtle_clear'] = function(block) {
-  return "await turtle.clear()\n";
-};
-
-pythonGenerator.forBlock['turtle_speed'] = function(block, generator) {
-  const speed = generator.valueToCode(block, 'SPEED', generator.ORDER_NONE) || '5';
-  return `await turtle.speed(${speed})\n`;
-};
-
-pythonGenerator.forBlock['turtle_xcor'] = function(block) {
-  return ["await turtle.xcor()", pythonGenerator.ORDER_FUNCTION_CALL];
-};
-
-pythonGenerator.forBlock['turtle_ycor'] = function(block) {
-  return ["await turtle.ycor()", pythonGenerator.ORDER_FUNCTION_CALL];
-};
+// ==========================================
+//  turtle graphics
+// ==========================================
 
 pythonGenerator.forBlock['turtle_import'] = function(block) {
   return "import turtle\n";
@@ -282,4 +266,22 @@ pythonGenerator.forBlock['turtle_write'] = function(block, generator) {
 pythonGenerator.forBlock['turtle_stamp'] = function(block) {
   return "await turtle.stamp()\n";
 };
+
+pythonGenerator.forBlock['turtle_clear'] = function(block) {
+  return "await turtle.clear()\n";
+};
+
+pythonGenerator.forBlock['turtle_speed'] = function(block, generator) {
+  const speed = generator.valueToCode(block, 'SPEED', generator.ORDER_NONE) || '5';
+  return `await turtle.speed(${speed})\n`;
+};
+
+pythonGenerator.forBlock['turtle_xcor'] = function(block) {
+  return ["await turtle.xcor()", pythonGenerator.ORDER_FUNCTION_CALL];
+};
+
+pythonGenerator.forBlock['turtle_ycor'] = function(block) {
+  return ["await turtle.ycor()", pythonGenerator.ORDER_FUNCTION_CALL];
+};
+
 }

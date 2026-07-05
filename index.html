@@ -15,7 +15,6 @@
   <meta name="apple-mobile-web-app-title" content="PyBlocks">
   <link rel="apple-touch-icon" href="/icon-192.png">
 
-  <!-- Import Map - tells browser where to find Blockly -->
   <script type="importmap">
     {
       "imports": {
@@ -34,10 +33,8 @@
   <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
 </head>
 <body>
-  <!-- ==================== Editor View ==================== -->
   <div id="editor-view" style="height: 100vh; display: flex; flex-direction: column;">
 
-    <!-- Toolbar -->
     <div id="toolbar">
       <div class="title" id="toolbar-title">Python Block Editor</div>
 
@@ -72,12 +69,8 @@
       <input type="file" id="file-input" style="display: none;" accept=".json" />
     </div>
 
-    <!-- Main editor area -->
     <div id="editor-container">
-      <!-- Blockly workspace -->
       <div id="blocklyDiv"></div>
-
-      <!-- Right panel -->
       <div id="right-panel">
         <pre id="codeDivContainer"><code id="codeDiv" class="language-python"># Your Python code will appear here...</code></pre>
 

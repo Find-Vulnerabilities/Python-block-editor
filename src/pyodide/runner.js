@@ -21,7 +21,7 @@ export function initPyodideWorker() {
   if (pyodideWorker) {
     pyodideWorker.terminate();
   }
-  
+
   consoleOutput.textContent += 'Initializing Python Worker environment...\n';
   if (runBtn) runBtn.disabled = true;
 
@@ -66,16 +66,16 @@ export function runPythonCode(code) {
     alert('Python environment is still loading. Please wait.');
     return;
   }
-  
+
   if (runBtn) {
     if (runBtn.disabled) return;
     runBtn.disabled = true;
     runBtn.textContent = '⏳ Running...';
   }
-  
+
   turtleAPI.reset();
-  consoleOutput.textContent = ''; // clear output
-  
+  consoleOutput.textContent = '';
+
   if (!code || !code.trim()) {
     consoleOutput.textContent = '>>> No code to run.\n';
     if (runBtn) {
@@ -85,17 +85,14 @@ export function runPythonCode(code) {
     return;
   }
 
-  // Transform 'def ' to 'async def ' so that await (used by turtle, input, time.sleep, etc.)
-  // is valid inside user-defined functions. Blockly's procedure blocks generate plain 'def'.
+  // the turtle/input/time.sleep bridges use await, so user-defined functions
+  // need to be async too. blockly's procedure blocks generate plain 'def'.
   code = code.replace(/^(\s*)def /gm, '$1async def ');
 
-  // Auto-switch tabs if turtle is imported
   if (code.includes('import turtle')) {
-    const tabTurtle = document.getElementById('tab-turtle');
-    if (tabTurtle) tabTurtle.click();
+    document.getElementById('tab-turtle')?.click();
   } else {
-    const tabConsole = document.getElementById('tab-console');
-    if (tabConsole) tabConsole.click();
+    document.getElementById('tab-console')?.click();
   }
 
   consoleOutput.textContent += '>>> Running...\n';
