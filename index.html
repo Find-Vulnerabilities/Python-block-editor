@@ -35,40 +35,60 @@
 <body>
   <div id="editor-view" style="height: 100vh; display: flex; flex-direction: column;">
 
+    <!-- ── Toolbar ── -->
     <div id="toolbar">
+      <button id="btn-mobile-menu" class="btn-mobile-menu" title="Menu">☰</button>
       <div class="title" id="toolbar-title">Python Block Editor</div>
 
-      <button id="btn-install-pwa" class="btn-install" style="display:none" title="Install this app to your desktop">
-        Install App
-      </button>
+      <div id="toolbar-actions">
+        <button id="btn-install-pwa" class="btn-install" style="display:none" title="Install this app to your desktop">
+          Install App
+        </button>
 
-      <select id="example-select" style="padding: 5px; border-radius: 4px; margin-right: 15px; font-weight: bold; cursor: pointer; background: #fff;">
+        <select id="example-select" style="padding: 5px; border-radius: 4px; margin-right: 15px; font-weight: bold; cursor: pointer; background: #fff;">
+          <option value="">📁 Load Example...</option>
+          <option value="hello">👋 Hello World</option>
+          <option value="loop">🔢 Count to 10</option>
+          <option value="guess">🎲 Guess Number Game</option>
+          <option value="turtle">🐢 Turtle Square</option>
+        </select>
+
+        <div class="toolbar-dropdown" id="dropdown-download">
+          <button id="btn-download" class="btn-download-main" title="Download">⬇ Download</button>
+          <div class="toolbar-dropdown-menu" id="dropdown-download-menu">
+            <button class="toolbar-dropdown-item" data-fmt="py">🐍 Python (.py)</button>
+            <button class="toolbar-dropdown-item" data-fmt="json">📋 Blockly JSON (.json)</button>
+          </div>
+        </div>
+
+        <button id="btn-load" class="btn-load-main" title="Load blocks from JSON file">📂 Load</button>
+
+        <div class="toolbar-sep"></div>
+
+        <button id="btn-run" class="btn-run-main">▶ Run</button>
+        <button id="btn-stop" class="btn-stop-main">🛑 Stop / Reset</button>
+        <button id="btn-clear-blocks" class="btn-clear-main">🗑️ Clear Blocks</button>
+      </div>
+
+      <input type="file" id="file-input" style="display: none;" accept=".json" />
+    </div>
+
+    <!-- ── Mobile collapsed toolbar menu ── -->
+    <div id="mobile-toolbar-dropdown" class="mobile-toolbar-dropdown" style="display:none;">
+      <select id="example-select-mobile" style="width:100%; padding: 8px; border-radius: 4px; font-weight: bold; cursor: pointer; background: #fff; margin-bottom: 6px;">
         <option value="">📁 Load Example...</option>
         <option value="hello">👋 Hello World</option>
         <option value="loop">🔢 Count to 10</option>
         <option value="guess">🎲 Guess Number Game</option>
         <option value="turtle">🐢 Turtle Square</option>
       </select>
-
-      <div class="toolbar-dropdown" id="dropdown-download">
-        <button id="btn-download" class="btn-download-main" title="Download">⬇ Download</button>
-        <div class="toolbar-dropdown-menu" id="dropdown-download-menu">
-          <button class="toolbar-dropdown-item" data-fmt="py">🐍 Python (.py)</button>
-          <button class="toolbar-dropdown-item" data-fmt="json">📋 Blockly JSON (.json)</button>
-        </div>
-      </div>
-
-      <button id="btn-load" class="btn-load-main" title="Load blocks from JSON file">📂 Load</button>
-
-      <div class="toolbar-sep"></div>
-
-      <button id="btn-run" class="btn-run-main">▶ Run</button>
-      <button id="btn-stop" class="btn-stop-main">🛑 Stop / Reset</button>
-      <button id="btn-clear-blocks" class="btn-clear-main">🗑️ Clear Blocks</button>
-
-      <input type="file" id="file-input" style="display: none;" accept=".json" />
+      <button id="btn-download-mobile" class="mobile-menu-btn">⬇ Download Python (.py)</button>
+      <button id="btn-load-mobile" class="mobile-menu-btn">📂 Load Blocks (.json)</button>
+      <button id="btn-clear-blocks-mobile" class="mobile-menu-btn">🗑️ Clear Blocks</button>
+      <button id="btn-install-pwa-mobile" class="mobile-menu-btn install-menu-btn" style="display:none;">📲 Install App</button>
     </div>
 
+    <!-- ── Editor area ── -->
     <div id="editor-container">
       <div id="blocklyDiv"></div>
       <div id="right-panel">
@@ -93,6 +113,26 @@
         </div>
       </div>
     </div>
+
+    <!-- ── Mobile bottom nav ── -->
+    <nav id="mobile-nav">
+      <button id="mobile-nav-blocks" class="mobile-nav-btn active" data-view="blocks">
+        <span class="mobile-nav-icon">🧩</span>
+        <span class="mobile-nav-label">Blocks</span>
+      </button>
+      <button id="mobile-nav-code" class="mobile-nav-btn" data-view="code">
+        <span class="mobile-nav-icon">📝</span>
+        <span class="mobile-nav-label">Code</span>
+      </button>
+      <button id="mobile-nav-run" class="mobile-nav-btn mobile-nav-run-btn">
+        <span class="mobile-nav-icon">▶</span>
+        <span class="mobile-nav-label">Run</span>
+      </button>
+      <button id="mobile-nav-turtle" class="mobile-nav-btn" data-view="turtle">
+        <span class="mobile-nav-icon">🐢</span>
+        <span class="mobile-nav-label">Turtle</span>
+      </button>
+    </nav>
   </div>
 
   <script type="module" src="src/main.js"></script>
