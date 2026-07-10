@@ -179,6 +179,11 @@ pythonGenerator.forBlock['python_input'] = function(block, generator) {
   return [`await input(${promptText})`, generator.ORDER_FUNCTION_CALL];
 };
 
+pythonGenerator.forBlock['python_input_stmt'] = function(block, generator) {
+  const promptText = generator.valueToCode(block, 'PROMPT', generator.ORDER_NONE) || '""';
+  return `input(${promptText})\n`;
+};
+
 // ==========================================
 //  turtle graphics
 // ==========================================

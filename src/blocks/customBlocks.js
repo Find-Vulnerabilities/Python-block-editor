@@ -327,6 +327,18 @@ Blockly.Blocks['python_input'] = {
   }
 };
 
+Blockly.Blocks['python_input_stmt'] = {
+  init: function() {
+    this.appendValueInput("PROMPT")
+        .setCheck(null)
+        .appendField("input()");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(160);
+    this.setTooltip("Popup a browser prompt to get user input text");
+  }
+};
+
 
 // -- turtle --
 Blockly.Blocks['turtle_clear'] = {

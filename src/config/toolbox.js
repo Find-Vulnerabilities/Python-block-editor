@@ -51,10 +51,15 @@ export const toolbox = {
         { "kind": "block", "type": "text_print" },
         { "kind": "block", "type": "text_join" },
         { "kind": "block", "type": "text_length" },
-        { 
-          "kind": "block", 
-          "type": "python_input", 
-          "inputs": { "PROMPT": { "shadow": { "type": "text", "fields": { "TEXT": "Please enter a value:" } } } } 
+        {
+          "kind": "block",
+          "type": "python_input",
+          "inputs": { "PROMPT": { "shadow": { "type": "text", "fields": { "TEXT": "Please enter a value:" } } } }
+        },
+        {
+          "kind": "block",
+          "type": "python_input_stmt",
+          "inputs": { "PROMPT": { "shadow": { "type": "text", "fields": { "TEXT": "Please enter a value:" } } } }
         }
       ]
     },
