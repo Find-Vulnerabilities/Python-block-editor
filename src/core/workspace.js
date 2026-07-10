@@ -151,10 +151,20 @@ export function loadExample(name) {
   }
 }
 
+function addAwait(code) {
+  // Add await back for execution so async calls work correctly.
+  // Negative lookbehind prevents double-await if user already wrote
+  // await in a raw_python block.
+  return code
+    .replace(/(?<!\bawait )\b(input\()/g, 'await $1')
+    .replace(/(?<!\bawait )\b(turtle\.)/g, 'await $1')
+    .replace(/(?<!\bawait )\b(time\.sleep\()/g, 'await $1');
+}
+
 export function runCurrentWorkspace() {
   if (!workspace) return;
   const code = pythonGenerator.workspaceToCode(workspace);
-  runPythonCode(code);
+  runPythonCode(addAwait(code));
 }
 
 export { pythonGenerator };
