@@ -13,7 +13,9 @@ let workspace = null;
 function stripAwait(code) {
   // generated code uses top-level await for turtle/input, but we want
   // the displayed/exported code to be standard Python
-  return code.replace(/^(\s*)await /gm, '$1');
+  return code
+    .replace(/^(\s*)await /gm, '$1')
+    .replace(/^(\s*)async def /gm, '$1def ');
 }
 
 export function getWorkspaceState() {
@@ -155,10 +157,26 @@ function addAwait(code) {
   // Add await back for execution so async calls work correctly.
   // Negative lookbehind prevents double-await if user already wrote
   // await in a raw_python block.
-  return code
+  code = code
     .replace(/(?<!\bawait )\b(input\()/g, 'await $1')
     .replace(/(?<!\bawait )\b(turtle\.)/g, 'await $1')
     .replace(/(?<!\bawait )\b(time\.sleep\()/g, 'await $1');
+
+  // Find all user-defined function names and add await to their calls too.
+  // This ensures recursion and cross-function calls work after runner.js
+  // converts them to async def. Skip the def line itself and avoid double-await.
+  const funcNames = [];
+  const defRegex = /^(\s*)def (\w+)\s*\(/gm;
+  let match;
+  while ((match = defRegex.exec(code)) !== null) {
+    funcNames.push(match[2]);
+  }
+  for (const name of funcNames) {
+    const callRegex = new RegExp(`(?<!\\bawait |\\bdef )\\b(${name})\\s*\\(`, 'g');
+    code = code.replace(callRegex, 'await $1(');
+  }
+
+  return code;
 }
 
 export function runCurrentWorkspace() {
