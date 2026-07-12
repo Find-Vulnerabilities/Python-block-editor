@@ -93,9 +93,10 @@ Blockly.Blocks['raw_python_stmt'] = {
 
 Blockly.Blocks['time_sleep'] = {
   init: function() {
-    this.appendValueInput("TIME")
-        .setCheck("Number")
-        .appendField("wait (seconds)");
+    this.appendDummyInput().appendField("wait");
+    this.appendValueInput("TIME").setCheck("Number");
+    this.appendDummyInput().appendField("seconds");
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(50);
@@ -105,9 +106,10 @@ Blockly.Blocks['time_sleep'] = {
 
 Blockly.Blocks['time_sleep_ms'] = {
   init: function() {
-    this.appendValueInput("TIME")
-        .setCheck("Number")
-        .appendField("wait (milliseconds)");
+    this.appendDummyInput().appendField("wait");
+    this.appendValueInput("TIME").setCheck("Number");
+    this.appendDummyInput().appendField("milliseconds");
+    this.setInputsInline(true);
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
     this.setColour(50);
