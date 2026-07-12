@@ -40,6 +40,12 @@ pythonGenerator.forBlock['time_sleep'] = function(block, generator) {
   return `time.sleep(${time})\n`;
 };
 
+pythonGenerator.forBlock['time_sleep_ms'] = function(block, generator) {
+  pythonGenerator.definitions_['import_time'] = 'import time';
+  const ms = generator.valueToCode(block, 'TIME', generator.ORDER_NONE) || '1000';
+  return `time.sleep(${ms} / 1000)\n`;
+};
+
 pythonGenerator.forBlock['random_randint'] = function(block, generator) {
   pythonGenerator.definitions_['import_random'] = 'import random';
   const min = generator.valueToCode(block, 'MIN', generator.ORDER_NONE) || '1';

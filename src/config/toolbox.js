@@ -77,6 +77,23 @@ export const toolbox = {
     },
     {
       "kind": "category",
+      "name": "Time",
+      "colour": 50,
+      "contents": [
+        {
+          "kind": "block",
+          "type": "time_sleep",
+          "inputs": { "TIME": { "shadow": { "type": "math_number", "fields": { "NUM": 1 } } } }
+        },
+        {
+          "kind": "block",
+          "type": "time_sleep_ms",
+          "inputs": { "TIME": { "shadow": { "type": "math_number", "fields": { "NUM": 1000 } } } }
+        }
+      ]
+    },
+    {
+      "kind": "category",
       "name": "Lists & Dicts (Arrays)",
       "colour": "%{BKY_LISTS_HUE}",
       "contents": [
@@ -192,7 +209,6 @@ export const toolbox = {
         { "kind": "block", "type": "import_as", "fields": { "MODULE_NAME": "numpy", "ALIAS": "np" } },
         { "kind": "block", "type": "call_module_function_args" },
         { "kind": "block", "type": "call_module_function_args_stmt" },
-        { "kind": "block", "type": "time_sleep" },
         { "kind": "block", "type": "random_randint" }
       ]
     }

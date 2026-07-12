@@ -93,12 +93,23 @@ Blockly.Blocks['raw_python_stmt'] = {
 
 Blockly.Blocks['time_sleep'] = {
   init: function() {
-    this.appendDummyInput().appendField("sleep (seconds)");
+    this.appendDummyInput().appendField("wait (seconds)");
     this.appendValueInput("TIME").setCheck("Number");
     this.setPreviousStatement(true, null);
     this.setNextStatement(true, null);
-    this.setColour(230);
-    this.setTooltip("Pause execution for a specific number of seconds");
+    this.setColour(50);
+    this.setTooltip("Pause execution for a specified number of seconds");
+  }
+};
+
+Blockly.Blocks['time_sleep_ms'] = {
+  init: function() {
+    this.appendDummyInput().appendField("wait (milliseconds)");
+    this.appendValueInput("TIME").setCheck("Number");
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour(50);
+    this.setTooltip("Pause execution for a specified number of milliseconds (1 sec = 1000 ms)");
   }
 };
 
