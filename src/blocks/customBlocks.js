@@ -543,6 +543,22 @@ Blockly.Blocks['turtle_stamp'] = {
   }
 };
 
+// -- "in" operator block --
+Blockly.Blocks['logic_in'] = {
+  init: function() {
+    this.appendValueInput("ITEM")
+        .setCheck(null);
+    this.appendDummyInput()
+        .appendField("in");
+    this.appendValueInput("CONTAINER")
+        .setCheck(null);
+    this.setInputsInline(true);
+    this.setOutput(true, "Boolean");
+    this.setColour("%{BKY_LOGIC_HUE}");
+    this.setTooltip("Check if an item is in a list, string, tuple, dictionary, or other container");
+  }
+};
+
 // -- assignment block --
 Blockly.Blocks['var_assign'] = {
   init: function() {

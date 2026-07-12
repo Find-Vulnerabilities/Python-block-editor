@@ -287,6 +287,12 @@ pythonGenerator.forBlock['turtle_speed'] = function(block, generator) {
   return `turtle.speed(${speed})\n`;
 };
 
+pythonGenerator.forBlock['logic_in'] = function(block, generator) {
+  const item = generator.valueToCode(block, 'ITEM', generator.ORDER_MEMBER) || 'None';
+  const container = generator.valueToCode(block, 'CONTAINER', generator.ORDER_MEMBER) || '[]';
+  return [`${item} in ${container}`, generator.ORDER_MEMBER];
+};
+
 pythonGenerator.forBlock['var_assign'] = function(block, generator) {
   const left = generator.valueToCode(block, 'LEFT', generator.ORDER_NONE) || 'x';
   const right = generator.valueToCode(block, 'RIGHT', generator.ORDER_NONE) || 'None';
