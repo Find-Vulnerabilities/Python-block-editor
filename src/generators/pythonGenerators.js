@@ -281,6 +281,12 @@ pythonGenerator.forBlock['turtle_speed'] = function(block, generator) {
   return `turtle.speed(${speed})\n`;
 };
 
+pythonGenerator.forBlock['var_assign'] = function(block, generator) {
+  const left = generator.valueToCode(block, 'LEFT', generator.ORDER_NONE) || 'x';
+  const right = generator.valueToCode(block, 'RIGHT', generator.ORDER_NONE) || 'None';
+  return `${left} = ${right}\n`;
+};
+
 pythonGenerator.forBlock['turtle_xcor'] = function(block) {
   return ["turtle.xcor()", pythonGenerator.ORDER_FUNCTION_CALL];
 };

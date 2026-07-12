@@ -528,4 +528,21 @@ Blockly.Blocks['turtle_stamp'] = {
   }
 };
 
+// -- assignment block --
+Blockly.Blocks['var_assign'] = {
+  init: function() {
+    this.appendValueInput("LEFT")
+        .setCheck(null);
+    this.appendDummyInput()
+        .appendField("=");
+    this.appendValueInput("RIGHT")
+        .setCheck(null);
+    this.setInputsInline(true);
+    this.setPreviousStatement(true, null);
+    this.setNextStatement(true, null);
+    this.setColour("%{BKY_VARIABLES_HUE}");
+    this.setTooltip("Assign a value: left = right");
+  }
+};
+
 }

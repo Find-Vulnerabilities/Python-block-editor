@@ -6,6 +6,10 @@ export const toolbox = {
       "name": "Logic",
       "colour": "%{BKY_LOGIC_HUE}",
       "contents": [
+        {
+          "kind": "block",
+          "type": "var_assign"
+        },
         { "kind": "block", "type": "controls_if" },
         { "kind": "block", "type": "logic_compare" },
         { "kind": "block", "type": "logic_operation" },
