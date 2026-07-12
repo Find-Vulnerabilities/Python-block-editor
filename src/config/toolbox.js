@@ -65,8 +65,8 @@ export const toolbox = {
     },
     {
       "kind": "category",
-      "name": "Type Casting",
-      "colour": 160,
+      "name": "Data Types",
+      "colour": 180,
       "contents": [
         { "kind": "block", "type": "type_cast" }
       ]

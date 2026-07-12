@@ -309,10 +309,19 @@ Blockly.Blocks['try_except_var'] = {
 Blockly.Blocks['type_cast'] = {
   init: function() {
     this.appendValueInput("VAL").setCheck(null).appendField("convert");
-    this.appendDummyInput().appendField("to").appendField(new Blockly.FieldDropdown([["int", "int"], ["float", "float"], ["str", "str"]]), "TYPE");
+    this.appendDummyInput().appendField("to").appendField(new Blockly.FieldDropdown([
+      ["int", "int"],
+      ["float", "float"],
+      ["str", "str"],
+      ["bool", "bool"],
+      ["list", "list"],
+      ["tuple", "tuple"],
+      ["dict", "dict"],
+      ["set", "set"]
+    ]), "TYPE");
     this.setOutput(true, null);
-    this.setColour(160);
-    this.setTooltip("Convert a value to int, float, or str");
+    this.setColour(180);
+    this.setTooltip("Convert a value to a specific data type, e.g. float(input())");
   }
 };
 
