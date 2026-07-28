@@ -6,15 +6,23 @@
   <title>Python Block Editor</title>
 
   <!-- PWA -->
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="/Python-block-editor/manifest.json">
   <meta name="theme-color" content="#4CAF50">
   <meta name="description" content="Learn Python with blocks — like Scratch, but generates real Python code with turtle graphics">
   <meta name="google-site-verification" content="ly-LqIo15py8nAxCYh5ztFax-WuE-Z3uPEd2TVY9kQ4">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PyBlocks">
-  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/Python-block-editor/icon-192.png">
 
+
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
   <script type="importmap">
     {
       "imports": {
@@ -23,14 +31,8 @@
       }
     }
   </script>
-
-  <link rel="stylesheet" href="src/styles/main.css">
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+  <script type="module" crossorigin src="/Python-block-editor/assets/index-BvjGm82u.js"></script>
+  <link rel="stylesheet" crossorigin href="/Python-block-editor/assets/index-B68i3bQE.css">
 </head>
 <body>
   <div id="editor-view" style="height: 100vh; display: flex; flex-direction: column;">
@@ -95,6 +97,5 @@
     </div>
   </div>
 
-  <script type="module" src="src/main.js"></script>
 </body>
 </html>
